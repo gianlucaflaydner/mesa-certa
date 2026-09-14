@@ -9,7 +9,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
-| Código | F0 concluída: esqueleto, `config.py`, ruff, mypy e pytest |
+| Código | F0 e F1 concluídas: domínio de reservas, banco, migração e seed |
 
 ## Regras gerais
 

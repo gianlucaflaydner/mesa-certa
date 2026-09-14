@@ -14,7 +14,7 @@ format:
 	$(UV) run ruff format .
 
 typecheck:
-	$(UV) run mypy src tests
+	$(UV) run mypy src tests scripts
 
 test:
 	$(UV) run pytest -m "not e2e"
@@ -27,7 +27,7 @@ ingest:
 	@echo "ingest: entra na F2"
 
 seed:
-	@echo "seed: entra na F1"
+	$(UV) run python scripts/reset_db.py
 
 eval:
 	@echo "eval: entra na F6"

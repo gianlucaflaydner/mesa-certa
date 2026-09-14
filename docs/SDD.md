@@ -437,7 +437,7 @@ CREATE INDEX idx_specials_date ON daily_specials (special_date);
 - 16 mesas reserváveis conforme §4.3 do PRD, mais o balcão com `reservable = 0`
 - `service_hours` conforme §4.2 do PRD
 - 3 datas de fechamento futuras (exemplo: 25/12, 01/01, mais uma manutenção)
-- Pratos do dia para os próximos 14 dias
+- Pratos do dia para os próximos 14 dias (2 por dia, inclusive segundas, de 2026-09-15 a 2026-09-28)
 - 12 reservas pré-existentes distribuídas, incluindo um sábado às 20:00 com o mezanino lotado — necessário para reproduzir o cenário de indisponibilidade da US-04
 
 O seed usa `random.Random(42)` para ser reproduzível. A suite de avaliação depende dessa reprodutibilidade.
@@ -450,7 +450,7 @@ O seed usa `random.Random(42)` para ser reproduzível. A suite de avaliação de
 @dataclass(frozen=True)
 class SlotAvailability:
     date: date
-    time: time
+    time: time | None         # None quando a consulta não informou horário
     available: bool
     zone: str | None          # zona da mesa alocável, se disponível
     tables_needed: int
@@ -458,8 +458,9 @@ class SlotAvailability:
 @dataclass(frozen=True)
 class AvailabilityResult:
     requested: SlotAvailability
-    alternatives: list[SlotAvailability]   # até 4, ordenadas por proximidade
+    alternatives: list[SlotAvailability]   # ver passo 7
     closed_reason: str | None              # preenchido quando o dia não abre
+    next_open_date: date | None            # preenchido junto com closed_reason
 ```
 
 **Algoritmo de consulta** — `check(date, party_size, time | None)`:
@@ -470,7 +471,9 @@ class AvailabilityResult:
 4. Gera os slots válidos do dia: de `opens_at` até `closes_at − 90 min`, passo de 30 min (RN-04)
 5. Para cada slot candidato, calcula `end_time` conforme duração por tamanho de grupo
 6. Determina o conjunto de mesas necessário (§5.6) e verifica sobreposição contra `reservations` com status `CONFIRMADA` (RN-06)
-7. Se `time` foi informado, o slot pedido vira `requested` e os demais viram `alternatives`; se não, `requested.available = False` e todos os slots livres viram alternativas
+7. Se `time` foi informado, o slot pedido vira `requested` e as alternativas são os slots livres **do mesmo serviço** (almoço ou jantar), até 4, ordenados por distância ao horário pedido, com empate resolvido pelo mais cedo. Se não foi informado, `requested.available = False` e todos os slots livres do dia viram alternativas, em ordem cronológica e sem limite. Slots fora da janela da RN-02 nunca entram como alternativa.
+
+Horário pedido fora do serviço levanta `HORARIO_FORA_DE_SERVICO`. Dia fechado não levanta erro em `check`: devolve `closed_reason` e `next_open_date`, e a tool converte em `DIA_FECHADO`. `ReservationService.create` levanta `DIA_FECHADO` com `details.proxima_data_aberta`.
 
 **Detecção de sobreposição.** Duas reservas na mesma mesa se sobrepõem quando `novo_inicio < existente_fim AND novo_fim > existente_inicio`. Comparação feita em minutos desde a meia-noite, com ajuste de +1440 para horários após a virada.
 
@@ -507,7 +510,7 @@ Responsabilidades:
 | `weekday_of(d)` | 0 = segunda … 6 = domingo |
 | `minutes_since_midnight(t, crosses_midnight)` | Aritmética de horário com ajuste de virada |
 | `add_duration(d, t, minutes)` | Retorna `(date, time)` de término |
-| `is_within_booking_window(d, t)` | Valida RN-02 |
+| `is_within_booking_window(d, t, now)` | Valida RN-02; `now` vem do `Clock` injetado |
 
 O modelo recebe no system prompt a data e hora atuais e o dia da semana. Ele converte "sábado" para a data ISO. As tools **rejeitam** qualquer coisa que não seja ISO, o que faz um erro de interpretação virar erro explícito no loop, não silêncio.
 
