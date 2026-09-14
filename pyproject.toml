@@ -1,0 +1,94 @@
+[project]
+name = "mesa-certa"
+version = "0.1.0"
+description = "Assistente conversacional de restaurante com RAG e tools transacionais."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.13",
+    "anthropic>=0.40",
+    "chromadb>=0.5",
+    "fastapi>=0.115",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "sentence-transformers>=3.0",
+    "sqlalchemy>=2.0",
+    "streamlit>=1.38",
+    "structlog>=24.4",
+    "torch>=2.4",
+    "uvicorn[standard]>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5.0",
+    "pyyaml>=6.0",
+    "ruff>=0.6",
+    "types-pyyaml>=6.0",
+]
+eval = [
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv]
+default-groups = ["dev"]
+
+# Torch só para CPU: evita baixar as rodas CUDA no Linux (Docker, CI).
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+# Blocos de código em docs são ilustrativos, não código do projeto.
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "RUF", "PT", "C4"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = "mesa_certa.*"
+strict = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+asyncio_mode = "auto"
+markers = [
+    "slow: testes que carregam modelos reais ou são lentos",
+    "e2e: testes ponta a ponta com API real do modelo, fora do make test",
+]
+
+[tool.coverage.run]
+source = ["mesa_certa"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

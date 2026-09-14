@@ -32,7 +32,7 @@ Não há serviço externo além da API do modelo. Banco e índice vetorial são 
 | Camada | Tecnologia | Versão alvo |
 |---|---|---|
 | Linguagem | Python | 3.12 |
-| Gerenciador de dependências | uv (ou Poetry) | — |
+| Gerenciador de dependências | uv | — |
 | LLM | Claude via `anthropic` SDK | modelo configurável por env |
 | Embeddings | `sentence-transformers` — `intfloat/multilingual-e5-small` | 384 dimensões |
 | Vector store | ChromaDB (PersistentClient) | — |
@@ -1257,7 +1257,7 @@ Determinismo: `temperature = 0.0`, seed do seed do banco fixa, `contexto_data` d
 ```bash
 # Modelo
 ANTHROPIC_API_KEY=
-MODEL_NAME=claude-sonnet-4-5
+MODEL_NAME=claude-sonnet-5
 MODEL_TEMPERATURE=0.3
 MODEL_MAX_TOKENS=2048
 

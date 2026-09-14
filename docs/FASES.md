@@ -9,7 +9,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
-| Código | nenhum |
+| Código | F0 concluída: esqueleto, `config.py`, ruff, mypy e pytest |
 
 ## Regras gerais
 
@@ -23,10 +23,10 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 
 | # | Decisão | Quando | Recomendação |
 |---|---|---|---|
-| D1 | Gerenciador de dependências: uv ou Poetry | início da F0 | uv (mais rápido, lockfile simples, bom no Docker) |
+| D1 | Gerenciador de dependências: uv ou Poetry | início da F0 | **decidido na F0: uv** |
 | D2 | Horários de funcionamento no system prompt | F4 | incluir no prompt; hoje o caso `tool-003` aceita `buscar_conhecimento` como alternativa |
 | D3 | Reescrever travessões de PRD e SDD | qualquer momento | fazer antes da F7, junto com o README |
-| D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | modelo Sonnet mais recente disponível; confirmar id na documentação da API |
+| D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | `claude-sonnet-5` já no `.env.example` desde a F0; confirmar id na documentação da API na F4 |
 | D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite |
 
 ---
