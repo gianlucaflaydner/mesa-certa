@@ -1,0 +1,24 @@
+# Segredos
+.env
+
+# Artefatos gerados (SDD §4)
+data/chroma/
+data/traces/
+data/*.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editor e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
