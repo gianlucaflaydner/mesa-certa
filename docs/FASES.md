@@ -9,7 +9,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
-| Código | F0 e F1 concluídas: domínio de reservas, banco, migração e seed |
+| Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
 
 ## Regras gerais
 
@@ -27,7 +27,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | D2 | Horários de funcionamento no system prompt | F4 | incluir no prompt; hoje o caso `tool-003` aceita `buscar_conhecimento` como alternativa |
 | D3 | Reescrever travessões de PRD e SDD | qualquer momento | fazer antes da F7, junto com o README |
 | D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | `claude-sonnet-5` já no `.env.example` desde a F0; confirmar id na documentação da API na F4 |
-| D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite |
+| D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite. Na F2, com e5, perguntas fora da base pontuaram cerca de 0,83 e a melhor resposta certa cerca de 0,90: o 0,72 atual não recusa nada, e a varredura precisa cobrir a faixa acima de 0,85 |
 
 ---
 

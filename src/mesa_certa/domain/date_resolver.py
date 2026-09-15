@@ -12,6 +12,7 @@ from mesa_certa.domain import rules
 from mesa_certa.domain.errors import InvalidDateFormat, InvalidTimeFormat
 
 MINUTES_PER_DAY = 24 * 60
+WEEKDAY_NAMES = ("segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo")
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 _TIME_RE = re.compile(r"([01]\d|2[0-3]):(00|30)")
@@ -69,6 +70,10 @@ def format_time(value: time) -> str:
 
 def weekday_of(value: date) -> int:
     return value.weekday()
+
+
+def weekday_name(value: date) -> str:
+    return WEEKDAY_NAMES[value.weekday()]
 
 
 def minutes_since_midnight(value: time, crosses_midnight: bool = False) -> int:

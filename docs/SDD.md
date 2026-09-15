@@ -329,8 +329,9 @@ mesa-certa/
 │       └── .gitkeep
 │
 ├── scripts/
-│   ├── generate_knowledge.py  # gera os .md via LLM (one-shot)
 │   ├── ingest.py
+│   ├── search.py            # busca manual por linha de comando
+│   ├── tool.py              # chama uma tool pelo registry e imprime o envelope
 │   └── reset_db.py
 │
 ├── migrations/              # Alembic
@@ -557,7 +558,7 @@ Todos herdam de `DomainError` e carregam um `code` estável, consumido pelo agen
 
 ### 6.1 Documentos da base
 
-Gerados uma única vez por `scripts/generate_knowledge.py` e depois **revisados manualmente e versionados**. A partir daí são artefatos estáveis do repositório — a suite de avaliação depende do conteúdo exato.
+Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **revisados manualmente e versionados**. Não há script de geração no projeto. A partir daí são artefatos estáveis do repositório — a suite de avaliação depende do conteúdo exato.
 
 | Arquivo | Conteúdo | Tamanho alvo |
 |---|---|---|
@@ -582,7 +583,8 @@ Gerados uma única vez por `scripts/generate_knowledge.py` e depois **revisados 
 2. Cada seção de nível mais profundo (`###` quando existir, senão `##`) vira um chunk candidato
 3. O texto do chunk recebe um prefixo de contexto: `"{título do documento} > {H2} > {H3}\n\n{conteúdo}"` — isso melhora a recuperação, pois o embedding passa a carregar o caminho hierárquico
 4. Chunk com mais de 1.200 caracteres é dividido por parágrafo, com 1 parágrafo de sobreposição; tabelas nunca são divididas
-5. Chunk com menos de 80 caracteres é fundido com o irmão seguinte
+5. Chunk com menos de 80 caracteres é fundido com o irmão seguinte (mesmo pai na hierarquia), herda o `chunk_id` dele e leva o próprio título como primeira linha; sem irmão seguinte, fica sozinho
+6. O preâmbulo antes do primeiro `##` não vira chunk
 
 **Metadados por chunk:**
 
@@ -592,7 +594,7 @@ Gerados uma única vez por `scripts/generate_knowledge.py` e depois **revisados 
     "doc_title": "Cardápio — Mesa Certa",
     "section_path": "Pratos principais > Opções sem glúten",
     "chunk_id": "cardapio.md#pratos-principais>opcoes-sem-gluten#0",
-    "content_hash": "sha256 do conteúdo",
+    "content_hash": "sha256 do texto enviado ao embedding (prefixo + conteúdo)",
     "char_count": 742,
     "indexed_at": "2026-09-14T10:00:00-03:00",
 }
@@ -651,7 +653,7 @@ Parâmetros padrão:
 | `similarity_threshold` | 0,72 | `RAG_SIMILARITY_THRESHOLD` |
 | `max_context_chars` | 4.000 | `RAG_MAX_CONTEXT_CHARS` |
 
-O Chroma devolve distância; o retriever converte para similaridade de cosseno e filtra pelo limiar. Se **nenhum** chunk atinge o limiar, `below_threshold = True` e a tool retorna uma estrutura vazia com mensagem explícita — o que dispara o comportamento de recusa do RF-15 e da RN-10.
+O Chroma devolve distância; o retriever converte para similaridade de cosseno e filtra pelo limiar. `Retriever.search` devolve o ranking bruto, sem limiar nem orçamento, e é a base das métricas de recuperação da F6; `Retriever.retrieve` aplica limiar e `max_context_chars`. Se **nenhum** chunk atinge o limiar, `below_threshold = True` e a tool retorna uma estrutura vazia com mensagem explícita — o que dispara o comportamento de recusa do RF-15 e da RN-10.
 
 > **Calibração.** O valor 0,72 é um ponto de partida. A fase F6 executa a suite variando o limiar de 0,60 a 0,85 em passos de 0,05 e fixa o valor que maximiza `hit@3` sem elevar o falso-positivo nos casos negativos do dataset. O valor final e a curva vão para o README.
 
@@ -717,6 +719,8 @@ Erro **nunca** levanta exceção até o loop: é capturado, serializado e devolv
   "data": {
     "trechos": [
       {"indice": 1, "fonte": "cardapio.md", "secao": "Pratos principais › Opções sem glúten",
+       "citacao": "cardapio.md › Pratos principais › Opções sem glúten",
+       "chunk_id": "cardapio.md#pratos-principais>opcoes-sem-gluten#0",
        "relevancia": 0.87, "conteudo": "..."}
     ],
     "encontrou_informacao": true
@@ -724,7 +728,9 @@ Erro **nunca** levanta exceção até o loop: é capturado, serializado e devolv
 }
 ```
 
-Quando nada atinge o limiar: `"encontrou_informacao": false` e `"trechos": []`.
+`citacao` é o texto pronto para a marcação `Fonte:` da resposta. `chunk_id` alimenta as citações do `TurnResult` (F4) e as métricas de recuperação (F6).
+
+Quando nada atinge o limiar: `"encontrou_informacao": false`, `"trechos": []` e `mensagem` orientando a declarar ausência de informação e oferecer o telefone.
 
 ---
 
@@ -741,7 +747,7 @@ Quando nada atinge o limiar: `"encontrou_informacao": false` e `"trechos": []`.
       "num_pessoas": {"type": "integer", "minimum": 1, "maximum": 20,
                       "description": "Número de pessoas no grupo."},
       "horario": {"type": "string",
-                  "description": "Horário desejado em HH:MM, em slots de 30 minutos. Opcional — se omitido, retorna todos os horários livres do dia."}
+                  "description": "Horário desejado em HH:MM, em slots de 30 minutos. Opcional. Se omitido, retorna todos os horários livres do dia."}
     },
     "required": ["data", "num_pessoas"]
   }
@@ -767,7 +773,11 @@ Quando nada atinge o limiar: `"encontrou_informacao": false` e `"trechos": []`.
 }
 ```
 
-Dia fechado retorna `ok: false` com código `DIA_FECHADO` e `details.proxima_data_aberta`.
+O retorno também traz `num_pessoas` e `zona` (zona alocável do horário pedido, ou `null`). Sem `horario`, `horario_solicitado` é `null`, `alternativas` lista todos os horários livres do dia em ordem cronológica e `disponivel` indica se há ao menos um.
+
+Dia fechado retorna `ok: false` com código `DIA_FECHADO` e `details` com `data`, `dia_semana`, `motivo` e `proxima_data_aberta`.
+
+Os limites de `num_pessoas` (1 a 20 aqui, 1 a 12 em `criar_reserva`) são publicados no schema, mas não validados pelo Pydantic: quem recusa é o domínio, com `GRUPO_INVALIDO` ou `GRUPO_ACIMA_DO_LIMITE`, cujo `details.contato_eventos` traz o telefone da casa.
 
 > **Por que `num_pessoas` aceita até 20 aqui e apenas 12 em `criar_reserva`.** É deliberado. Se o schema limitasse a 12, o modelo tenderia a silenciosamente ajustar um pedido de 18 pessoas para 12. Aceitando o valor real, a tool responde com o erro `GRUPO_ACIMA_DO_LIMITE`, e o agente comunica a regra de evento privado ao cliente (RN-01, US-04). Erro explícito é melhor que correção silenciosa.
 
@@ -832,7 +842,7 @@ Dia fechado retorna `ok: false` com código `DIA_FECHADO` e `details.proxima_dat
 }
 ```
 
-Retorna os dados da reserva e `situacao` (`CONFIRMADA`, `CANCELADA`, `CONCLUIDA`, `NO_SHOW`), ou `ok: false` com `RESERVA_NAO_ENCONTRADA`.
+Retorna os dados da reserva e `situacao` (`CONFIRMADA`, `CANCELADA`, `CONCLUIDA`, `NO_SHOW`), ou `ok: false` com `RESERVA_NAO_ENCONTRADA`. Nenhuma tool devolve telefone ou e-mail do cliente.
 
 ---
 
@@ -876,7 +886,7 @@ Fora da janela: `"dentro_da_janela_gratuita": false` e `aviso` com o texto da po
 ```json
 {
   "name": "listar_pratos_do_dia",
-  "description": "Lista os pratos do dia de uma data específica. Use esta tool — e não a base de conhecimento — para prato do dia, pois é informação que muda diariamente.",
+  "description": "Lista os pratos do dia de uma data específica. Use esta tool, e não a base de conhecimento, para prato do dia, pois é informação que muda diariamente.",
   "input_schema": {
     "type": "object",
     "properties": {
@@ -900,8 +910,8 @@ class ToolRegistry:
 
 `dispatch` é responsável por:
 
-1. Validar `args` contra o modelo Pydantic da tool → erro de validação vira `ToolError` com código `ARGUMENTOS_INVALIDOS`, sem estourar o loop
-2. Abrir um span de trace
+1. Validar `args` contra o modelo Pydantic da tool → erro de validação vira `ToolError` com código `ARGUMENTOS_INVALIDOS`, sem estourar o loop; nome inexistente vira `TOOL_DESCONHECIDA`
+2. Abrir um span de trace (via `ToolCallObserver`, conectado pelo agente na F4)
 3. Executar a tool
 4. Capturar `DomainError` e exceções inesperadas, serializando ambas no envelope
 5. Registrar duração e resultado no trace
@@ -1333,7 +1343,7 @@ Modelos SQLAlchemy, migração inicial, `seed.py`, `date_resolver.py`, `rules.py
 **Pronto quando:** todos os casos de borda de §13 passam, sem nenhuma linha de IA no projeto.
 
 ### F2 — Base de conhecimento e RAG
-`generate_knowledge.py`, os 4 documentos gerados e revisados, `chunker.py`, `embedder.py`, `store.py`, `ingest.py`, `retriever.py`.
+Os 4 documentos gerados fora do repositório e revisados, `chunker.py`, `embedder.py`, `store.py`, `ingest.py`, `retriever.py`.
 **Pronto quando:** `make ingest` é idempotente e uma busca por linha de comando devolve trechos plausíveis com score. `tests/unit/test_dataset_contract.py` confirma, usando o chunker real, que todo `chunks_esperados` de `evals/dataset.yaml` existe.
 
 ### F3 — Tools

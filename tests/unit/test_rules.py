@@ -46,7 +46,11 @@ def test_grupo_13_acima_do_limite() -> None:
     with pytest.raises(GroupTooLarge) as exc:
         rules.validate_party_size(13)
     assert exc.value.code == "GRUPO_ACIMA_DO_LIMITE"
-    assert exc.value.details == {"maximo": 12, "informado": 13}
+    assert exc.value.details == {
+        "maximo": 12,
+        "informado": 13,
+        "contato_eventos": "(51) 3030-4050",
+    }
 
 
 def test_antecedencia() -> None:

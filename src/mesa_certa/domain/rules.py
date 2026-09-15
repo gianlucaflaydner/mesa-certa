@@ -30,6 +30,7 @@ LATE_TOLERANCE_MINUTES = 20
 FREE_CANCELLATION_NOTICE = timedelta(hours=4)
 MAX_ALTERNATIVES = 4
 MONDAY = 0
+RESTAURANT_PHONE = "(51) 3030-4050"
 
 
 class Zone(StrEnum):
@@ -87,7 +88,13 @@ def validate_party_size(party_size: int) -> None:
     if party_size < MIN_PARTY_SIZE:
         raise InvalidGroupSize(details={"minimo": MIN_PARTY_SIZE, "informado": party_size})
     if party_size > MAX_PARTY_SIZE:
-        raise GroupTooLarge(details={"maximo": MAX_PARTY_SIZE, "informado": party_size})
+        raise GroupTooLarge(
+            details={
+                "maximo": MAX_PARTY_SIZE,
+                "informado": party_size,
+                "contato_eventos": RESTAURANT_PHONE,
+            }
+        )
 
 
 # RN-02

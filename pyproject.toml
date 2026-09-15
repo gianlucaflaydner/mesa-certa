@@ -59,8 +59,9 @@ extend-exclude = ["*.md"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP", "SIM", "N", "RUF", "PT", "C4"]
-# Nomes de exceção seguem o SDD §5.5 (InvalidDateFormat, DayClosed), sem sufixo Error.
-ignore = ["N818"]
+# N818: nomes de exceção seguem o SDD §5.5 (InvalidDateFormat, DayClosed), sem sufixo Error.
+# RUF001: o separador "›" das citações é intencional (SDD §6.5).
+ignore = ["N818", "RUF001"]
 
 [tool.ruff.lint.per-file-ignores]
 "migrations/versions/*" = ["E501"]

@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test cov ingest seed eval run-api run-ui
+.PHONY: install lint format typecheck test cov ingest search seed eval run-api run-ui
 
 UV ?= uv
 
@@ -24,7 +24,10 @@ cov:
 
 # Stubs: implementados nas fases indicadas.
 ingest:
-	@echo "ingest: entra na F2"
+	$(UV) run python scripts/ingest.py
+
+search:
+	$(UV) run python scripts/search.py "$(Q)"
 
 seed:
 	$(UV) run python scripts/reset_db.py
