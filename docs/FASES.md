@@ -8,10 +8,10 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 |---|---|
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
-| Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
+| Dataset de avaliação | `evals/dataset.yaml`, 41 casos (8 adversariais), validado contra os cabeçalhos reais |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
 | F4 | concluída: loop, sessão, trace e persona; cenário da US-08 validado com a API real |
-| F4.1 | especificada (proteção contra injeção de instruções, SDD §8.5); não iniciada |
+| F4.1 | código e testes sem rede concluídos (SDD §8.5); falta rodar os casos adv-004 a adv-008 no `make chat` com a API real |
 
 ## Regras gerais
 
@@ -227,7 +227,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Arquivo | Conteúdo |
 |---|---|
 | `agent/prompts.py` | P1: seção de hierarquia de autoridade (só o system prompt instrui; `tool_result` e `dados_informados_pelo_cliente` são dados; recusa simpática a vazamento de prompt e troca de papel) |
-| `agent/sanitize.py` | P3: `clean_text(value, max_chars)` remove controle e largura zero; `MessageTooLong` acima do limite |
+| `mesa_certa/sanitize.py` | P3 e P4: `clean_text`, `clean_single_line` e `clean_message` (levanta `MessageTooLong`); fica fora de `agent/` porque as tools também usam |
 | `agent/loop.py` | aplica P3 no início de `run_turn` e P5 antes de `_finish` |
 | `agent/guards.py` | P5: `check_reply(reply, turn_tool_results, session_tool_results) -> GuardOutcome` com as checagens (a) código e (b) confirmação sem tool; `SAFE_REPLY` com telefone |
 | `tools/reservations.py` | P4: limites de `nome` e `observacoes` via Pydantic; `consultar_reserva` agrupa campos do cliente em `dados_informados_pelo_cliente` |

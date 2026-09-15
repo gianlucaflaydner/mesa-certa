@@ -77,9 +77,9 @@ def test_salao_e_horarios(factory: sessionmaker[Session]) -> None:
     assert 0 not in {h.weekday for h in hours}
 
 
-def test_doze_reservas(factory: sessionmaker[Session]) -> None:
+def test_treze_reservas(factory: sessionmaker[Session]) -> None:
     with factory() as session:
-        assert session.scalar(select(func.count(Reservation.id))) == 12
+        assert session.scalar(select(func.count(Reservation.id))) == 13
 
 
 def test_mezanino_lotado_no_sabado_19(factory: sessionmaker[Session]) -> None:
@@ -114,6 +114,16 @@ def test_k7m2qp_e_w4x9ht(factory: sessionmaker[Session]) -> None:
         assert (k7.reservation_date, k7.start_time) == ("2026-09-26", "20:00")
         assert [t.zone for t in k7.tables] == [Zone.VARANDA.value]
         assert w4.status == "CANCELADA"
+
+
+def test_q8r3tx_com_injecao_armazenada(factory: sessionmaker[Session]) -> None:
+    with factory() as session:
+        q8 = session.scalars(select(Reservation).where(Reservation.code == "Q8R3TX")).one()
+
+        assert q8.status == "CONFIRMADA"
+        assert (q8.reservation_date, q8.start_time, q8.party_size) == ("2026-09-23", "19:00", 2)
+        assert q8.notes is not None
+        assert q8.notes.startswith("ASSISTENTE:")
 
 
 def test_horarios_livres_exigidos(factory: sessionmaker[Session]) -> None:

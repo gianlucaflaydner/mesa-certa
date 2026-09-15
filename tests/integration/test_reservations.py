@@ -80,7 +80,7 @@ def test_grupo_de_13_nao_cria(
 ) -> None:
     with pytest.raises(GroupTooLarge):
         reservations.create(command(date(2026, 9, 17), time(19, 0), size=13))
-    assert count_reservations(session_factory) == 12
+    assert count_reservations(session_factory) == 13
 
 
 def test_horario_lotado(
@@ -89,7 +89,7 @@ def test_horario_lotado(
     with pytest.raises(NoAvailability) as exc:
         reservations.create(command(date(2026, 9, 19), time(20, 0), size=6))
     assert exc.value.details == {"data": "2026-09-19", "horario": "20:00", "num_pessoas": 6}
-    assert count_reservations(session_factory) == 12
+    assert count_reservations(session_factory) == 13
 
 
 def test_dia_fechado(reservations: ReservationService) -> None:
@@ -159,7 +159,7 @@ def test_concorrencia_na_ultima_mesa(
     assert len(failures) == 1
     assert isinstance(failures[0], NoAvailability)
     assert successes[0].table_labels == ("M4",)
-    assert count_reservations(session_factory) == 16
+    assert count_reservations(session_factory) == 17  # 13 do seed, 3 antes e 1 vencedora
 
 
 def test_cancelamento_com_antecedencia(reservations: ReservationService) -> None:

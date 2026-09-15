@@ -18,8 +18,10 @@ from typing import Any
 import structlog
 
 from mesa_certa.domain.date_resolver import Clock
+from mesa_certa.observability.injection import looks_like_injection
 from mesa_certa.observability.masking import mask_text, mask_value
 from mesa_certa.tools.base import ToolResult
+from mesa_certa.tools.reservations import CUSTOMER_DATA_KEY
 
 logger = structlog.get_logger(__name__)
 
@@ -76,6 +78,8 @@ class Trace:
     iterations: int = 0
     exhausted: bool = False
     stop_reason: str | None = None
+    suspeita_injecao: bool = False
+    guard_violations: list[str] = field(default_factory=list)
     error: str | None = None
     total_ms: int = 0
     _started_perf: float = field(default_factory=time.perf_counter, repr=False)
@@ -116,6 +120,11 @@ class Trace:
         )
         if name == KNOWLEDGE_TOOL and result.ok and result.data is not None:
             self._record_retrieval(args, result.data)
+        customer_data = (result.data or {}).get(CUSTOMER_DATA_KEY)
+        if isinstance(customer_data, Mapping) and any(
+            isinstance(v, str) and looks_like_injection(v) for v in customer_data.values()
+        ):
+            self.suspeita_injecao = True
 
     def _record_retrieval(self, args: object, data: Mapping[str, Any]) -> None:
         query = args.get("pergunta", "") if isinstance(args, Mapping) else ""
@@ -150,6 +159,7 @@ class Tracer:
             session_id=session_id,
             started_at=self._clock.now(),
             user_message=mask_text(user_message),
+            suspeita_injecao=looks_like_injection(user_message),
         )
 
     def finish(self, trace: Trace, reply: str, error: str | None = None) -> None:
@@ -169,6 +179,8 @@ class Tracer:
             iterations=trace.iterations,
             tools=[t.name for t in trace.tool_calls],
             exhausted=trace.exhausted,
+            suspeita_injecao=trace.suspeita_injecao,
+            guard_violations=trace.guard_violations,
             error=trace.error,
             total_ms=trace.total_ms,
         )

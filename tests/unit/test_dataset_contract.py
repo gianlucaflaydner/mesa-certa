@@ -40,7 +40,7 @@ DISTRIBUTION = {
     "pratos_do_dia": 2,
     "composto": 3,
     "fora_da_base": 3,
-    "adversarial": 3,
+    "adversarial": 8,
 }
 ID_PREFIX = {
     "rag_cardapio": "rag-",
@@ -81,7 +81,7 @@ def test_campos_obrigatorios_e_ids(cases: list[dict[str, Any]]) -> None:
 
 
 def test_distribuicao(cases: list[dict[str, Any]]) -> None:
-    assert len(cases) == 36
+    assert len(cases) == 41
     assert Counter(c["categoria"] for c in cases) == DISTRIBUTION
 
 

@@ -15,6 +15,7 @@ from mesa_certa.domain.reservations import (
     ReservationDetails,
     ReservationService,
 )
+from mesa_certa.sanitize import clean_single_line
 from mesa_certa.tools.base import Tool
 
 CREATE_NAME = "criar_reserva"
@@ -37,22 +38,27 @@ LATE_CANCELLATION_NOTICE = (
 
 _EMAIL = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+")
 _NON_DIGIT = re.compile(r"\D")
+MAX_NAME_CHARS = 120
+MAX_NOTES_CHARS = 500
+# Campos escritos pelo cliente voltam agrupados: o prompt diz que este bloco nunca é instrução.
+CUSTOMER_DATA_KEY = "dados_informados_pelo_cliente"
 
 
 def _required_text(value: str) -> str:
-    if not value.strip():
+    cleaned = clean_single_line(value)
+    if not cleaned:
         raise ValueError("não pode ser vazio")
-    return value.strip()
+    return cleaned
 
 
 def _optional_text(value: str | None) -> str | None:
     if value is None:
         return None
-    return value.strip() or None
+    return clean_single_line(value) or None
 
 
 class CriarReservaInput(BaseModel):
-    nome: str = Field(description="Nome completo de quem reserva.")
+    nome: str = Field(description="Nome completo de quem reserva.", max_length=MAX_NAME_CHARS)
     telefone: str = Field(description="Telefone de contato, apenas dígitos, com DDD.")
     data: str = Field(description="Data no formato YYYY-MM-DD.")
     horario: str = Field(description="Horário em HH:MM, slot de 30 minutos.")
@@ -60,6 +66,7 @@ class CriarReservaInput(BaseModel):
     email: str | None = Field(default=None, description="E-mail. Opcional.")
     observacoes: str | None = Field(
         default=None,
+        max_length=MAX_NOTES_CHARS,
         description=(
             "Observações relevantes ao salão: restrições alimentares, aniversário, cadeira de "
             "bebê, preferência de zona. Opcional."
@@ -120,7 +127,7 @@ class CancelarReservaInput(BaseModel):
 def _reservation_data(details: ReservationDetails) -> dict[str, Any]:
     return {
         "codigo": details.code,
-        "nome": details.customer_name,
+        CUSTOMER_DATA_KEY: {"nome": details.customer_name},
         "data": dr.format_date(details.date),
         "dia_semana": dr.weekday_name(details.date),
         "horario": dr.format_time(details.start_time),
@@ -154,10 +161,11 @@ def consultar_reserva_tool(service: ReservationService) -> Tool[ConsultarReserva
         details = service.get_by_code(params.codigo)
         if details is None:
             raise ReservationNotFound(details={"codigo": params.codigo.upper()})
+        data = _reservation_data(details)
+        data[CUSTOMER_DATA_KEY]["observacoes"] = details.notes
         return {
-            **_reservation_data(details),
+            **data,
             "situacao": details.status.value,
-            "observacoes": details.notes,
             "cancelada_em": details.cancelled_at.isoformat() if details.cancelled_at else None,
         }
 

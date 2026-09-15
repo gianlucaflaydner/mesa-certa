@@ -55,6 +55,32 @@ class Session:
     def to_api_messages(self) -> list[Message]:
         return [dict(m) for m in self.messages]
 
+    def replace_last_reply(self, text: str) -> None:
+        """Troca a resposta final do turno (usado pela verificação da resposta, SDD §8.5).
+
+        Só atua sobre uma mensagem final, sem `tool_use`; os blocos de thinking dela podem
+        sair, porque a API só exige thinking dentro de um ciclo de tool em andamento.
+        """
+        if self.messages and self.messages[-1].get("role") == "assistant":
+            self.messages[-1] = {"role": "assistant", "content": [{"type": "text", "text": text}]}
+
+    def customer_and_tool_text(self) -> str:
+        """Tudo que o cliente escreveu e que as tools devolveram nesta sessão."""
+        parts: list[str] = []
+        for message in self.messages:
+            if message.get("role") != "user":
+                continue
+            content = message.get("content")
+            if isinstance(content, str):
+                parts.append(content)
+                continue
+            parts.extend(
+                str(block.get("content", ""))
+                for block in content or []
+                if isinstance(block, Mapping) and block.get("type") == "tool_result"
+            )
+        return "\n".join(parts)
+
     def _prune(self, keep: int) -> None:
         if len(self.messages) <= keep:
             return

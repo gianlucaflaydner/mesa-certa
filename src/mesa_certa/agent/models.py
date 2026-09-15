@@ -47,5 +47,6 @@ class TurnResult:
     tool_calls: list[ToolCallRecord] = field(default_factory=list)
     iterations: int = 0
     exhausted: bool = False
+    guard_violations: list[str] = field(default_factory=list)
     latency_ms: int = 0
     usage: TokenUsage = field(default_factory=TokenUsage)

@@ -10,6 +10,7 @@ from typing import Any
 
 from anthropic.types import Message
 
+from mesa_certa.agent.guards import ToolOutcome, check_reply
 from mesa_certa.agent.llm import LLMClient
 from mesa_certa.agent.models import Citation, ToolCallRecord, TurnResult
 from mesa_certa.agent.prompts import build_system_prompt
@@ -17,6 +18,7 @@ from mesa_certa.agent.session import Session
 from mesa_certa.domain.date_resolver import Clock
 from mesa_certa.domain.rules import RESTAURANT_PHONE
 from mesa_certa.observability.tracing import KNOWLEDGE_TOOL, Trace, Tracer
+from mesa_certa.sanitize import MAX_MESSAGE_CHARS, clean_message
 from mesa_certa.tools.base import ToolResult
 from mesa_certa.tools.registry import ToolRegistry
 
@@ -41,17 +43,22 @@ class AgentLoop:
         clock: Clock,
         tracer: Tracer,
         max_iterations: int = 8,
+        max_message_chars: int = MAX_MESSAGE_CHARS,
     ) -> None:
         self._llm = llm
         self._registry = registry
         self._clock = clock
         self._tracer = tracer
         self.max_iterations = max_iterations
+        self.max_message_chars = max_message_chars
 
     def run_turn(self, session: Session, user_message: str) -> TurnResult:
+        """Executa um turno. Levanta `MessageTooLong` antes de tocar sessão ou modelo."""
+        user_message = clean_message(user_message, self.max_message_chars)
         started = time.perf_counter()
         trace = self._tracer.start_turn(session.id, user_message)
         turn = TurnResult(session_id=session.id, trace_id=trace.trace_id, reply="")
+        outcomes: list[ToolOutcome] = []
         session.append_user(user_message)
 
         try:
@@ -66,11 +73,14 @@ class AgentLoop:
                         b.to_dict(mode="json") for b in response.content if b.type != "tool_use"
                     )
                     turn.reply = _final_reply(response)
+                    self._guard_reply(session, turn, trace, outcomes)
                     return self._finish(turn, trace, started)
 
                 session.append_assistant(b.to_dict(mode="json") for b in response.content)
 
-                results = [self._run_tool(b.id, b.name, b.input, trace, turn) for b in tool_uses]
+                results = [
+                    self._run_tool(b.id, b.name, b.input, trace, turn, outcomes) for b in tool_uses
+                ]
                 session.append_tool_results(results)
         except Exception as exc:
             self._tracer.finish(trace, "", error=type(exc).__name__)
@@ -108,12 +118,21 @@ class AgentLoop:
         return response
 
     def _run_tool(
-        self, tool_use_id: str, name: str, args: object, trace: Trace, turn: TurnResult
+        self,
+        tool_use_id: str,
+        name: str,
+        args: object,
+        trace: Trace,
+        turn: TurnResult,
+        outcomes: list[ToolOutcome],
     ) -> dict[str, Any]:
         t0 = time.perf_counter()
         result = self._registry.dispatch(name, args)
         duration_ms = _ms_since(t0)
         trace.record_tool_call(name, args, result, duration_ms)
+        outcomes.append(
+            ToolOutcome(name, result.ok, result.data, result.error.code if result.error else None)
+        )
         turn.tool_calls.append(
             ToolCallRecord(
                 name=name,
@@ -130,6 +149,16 @@ class AgentLoop:
             "content": result.to_json(),
             "is_error": not result.ok,
         }
+
+    def _guard_reply(
+        self, session: Session, turn: TurnResult, trace: Trace, outcomes: list[ToolOutcome]
+    ) -> None:
+        guard = check_reply(turn.reply, outcomes, session.customer_and_tool_text())
+        if not guard.replaced:
+            return
+        turn.reply = guard.reply
+        turn.guard_violations = trace.guard_violations = guard.violations
+        session.replace_last_reply(guard.reply)
 
     def _finish(self, turn: TurnResult, trace: Trace, started: float) -> TurnResult:
         turn.latency_ms = _ms_since(started)
