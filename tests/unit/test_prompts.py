@@ -30,6 +30,9 @@ def test_regras_carregam_as_decisoes_do_produto() -> None:
     assert "20 minutos" in RULES_PROMPT
     assert "encontrou_informacao = false" in RULES_PROMPT
     assert "Fonte: " in RULES_PROMPT
+    assert "amigável e proativo" in RULES_PROMPT
+    assert "respeitosa, simpática e buscando ajudar" in RULES_PROMPT
+    assert "nunca significa agir sem confirmação" in RULES_PROMPT
 
 
 def test_prompt_sem_travessao() -> None:

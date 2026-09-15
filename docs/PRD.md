@@ -621,7 +621,7 @@ Funcionalidade: Trace de execução
 | R-03 | Interpretação errada de data relativa | Médio | Resolução de data em código, não no modelo; testes unitários de casos de borda |
 | R-04 | Condição de corrida na criação de reserva | Médio | Validação de disponibilidade dentro da transação, constraint de unicidade no banco |
 | R-05 | Chunking quebra tabela de alérgenos ao meio | Médio | Chunking por seção de Markdown, com tabelas mantidas íntegras |
-| R-06 | Prompt injection via mensagem do usuário | Médio | Instruções de limite no system prompt, casos adversariais no dataset |
+| R-06 | Prompt injection via mensagem do usuário, dados gravados em reserva ou documento | Médio | Defesa em camadas (SDD §8.5): hierarquia de autoridade no prompt, invariantes no código, higiene de entrada, verificação da resposta antes de enviar e sinalização no trace; 8 casos adversariais no dataset |
 | R-07 | Escopo cresce e o projeto não termina | Alto para o objetivo de portfólio | Backlog explícito na seção 10.2, fases de implementação definidas no SDD |
 
 ---

@@ -10,7 +10,8 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
-| F4 | código e testes sem rede concluídos; falta rodar `make chat` com chave real no cenário da US-08 |
+| F4 | código e testes sem rede concluídos, persona no system prompt; falta rodar `make chat` com chave real no cenário da US-08 |
+| F4.1 | especificada (proteção contra injeção de instruções, SDD §8.5); não iniciada |
 
 ## Regras gerais
 
@@ -28,6 +29,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | D2 | Horários de funcionamento no system prompt | F4 | **decidido na F4: incluídos no prompt**, com instrução de não consultar disponibilidade na segunda |
 | D3 | Reescrever travessões de PRD e SDD | qualquer momento | fazer antes da F7, junto com o README |
 | D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | **confirmado na F4: `claude-sonnet-5`**. Ele não aceita `temperature` (o SDK 1.x nem expõe o parâmetro), então `MODEL_TEMPERATURE` saiu e entrou `MODEL_EFFORT` (padrão `medium`, a calibrar na F6); `MODEL_MAX_TOKENS` foi para 16.000 por causa do thinking adaptativo |
+| D6 | Limites de tamanho da P3 e da P4 (2.000 caracteres na mensagem, 120 no nome, 500 nas observações) | F4.1 | manter os valores do SDD §8.5 e revisar se algum caso real do dataset for cortado |
 | D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite. Na F2, com e5, perguntas fora da base pontuaram cerca de 0,83 e a melhor resposta certa cerca de 0,90: o 0,72 atual não recusa nada, e a varredura precisa cobrir a faixa acima de 0,85 |
 
 ---
@@ -213,6 +215,49 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 **Pronto quando**
 - Todos os cenários acima passam sem rede.
 - `scripts/chat.py` com chave real conclui o cenário da US-08.
+
+---
+
+## F4.1. Proteção contra injeção de instruções
+
+**Objetivo.** Defesa em camadas do SDD §8.5: o prompt reduz a chance de o modelo obedecer a instruções de terceiros, e o código garante que, se obedecer, nada indevido chega ao cliente nem ao banco.
+
+**Entregas**
+
+| Arquivo | Conteúdo |
+|---|---|
+| `agent/prompts.py` | P1: seção de hierarquia de autoridade (só o system prompt instrui; `tool_result` e `dados_informados_pelo_cliente` são dados; recusa simpática a vazamento de prompt e troca de papel) |
+| `agent/sanitize.py` | P3: `clean_text(value, max_chars)` remove controle e largura zero; `MessageTooLong` acima do limite |
+| `agent/loop.py` | aplica P3 no início de `run_turn` e P5 antes de `_finish` |
+| `agent/guards.py` | P5: `check_reply(reply, turn_tool_results, session_tool_results) -> GuardOutcome` com as checagens (a) código e (b) confirmação sem tool; `SAFE_REPLY` com telefone |
+| `tools/reservations.py` | P4: limites de `nome` e `observacoes` via Pydantic; `consultar_reserva` agrupa campos do cliente em `dados_informados_pelo_cliente` |
+| `observability/injection.py` | P6: `looks_like_injection(text) -> bool` com a lista de padrões do SDD |
+| `observability/tracing.py` | campos `suspeita_injecao` e `guard_violations` no `Trace` |
+| `db/seed.py` | reserva `Q8R3TX` com observação maliciosa, sem conflitar com as pré-condições atuais |
+| `evals/dataset.yaml` | casos adv-004 a adv-008 e a nova pré-condição no cabeçalho; distribuição passa a 41 casos |
+| `tests/unit/test_dataset_contract.py` | distribuição atualizada |
+
+**Regras**
+- P5 nunca bloqueia resposta legítima: o código só é aceito se veio de `tool_result` da sessão, e o status "confirmada" é permitido após `consultar_reserva`.
+- P6 só marca o trace. Nenhuma decisão de atendimento depende dela.
+- A mensagem mascarada no trace é a mensagem já higienizada.
+- Nada de lista de palavras proibidas na entrada: bloquear por palavra recusa clientes legítimos e é fácil de contornar.
+
+**Testes**
+
+| Arquivo | Cobre |
+|---|---|
+| `tests/unit/test_sanitize.py` | largura zero e controle removidos, quebra de linha preservada, limite exato e limite mais um |
+| `tests/unit/test_guards.py` | código inventado trocado; código vindo de tool aceito; palavra comum em maiúsculas (ex.: "BRASIL") não tratada como código; "reserva confirmada" sem `criar_reserva` trocada; com `criar_reserva` ok aceita; "confirmada" após `consultar_reserva` aceita; cancelamento sem tool trocado |
+| `tests/unit/test_injection.py` | padrões detectados, incluindo prefixo `SISTEMA:` só em início de linha; frases comuns de cliente não marcadas |
+| `tests/integration/test_agent_loop.py` | modelo roteirizado que "obedece" à injeção (confirma sem tool, inventa código) tem a resposta trocada e `guard_violations` no trace; observação maliciosa chega ao modelo dentro de `dados_informados_pelo_cliente` |
+| `tests/integration/test_tools.py` | nome acima de 120 e observação acima de 500 viram `ARGUMENTOS_INVALIDOS` |
+| `tests/integration/test_seed.py` | pré-condição de `Q8R3TX` |
+
+**Pronto quando**
+- Todos os testes acima passam sem rede.
+- `make chat` com chave real resiste aos 5 casos novos (adv-004 a adv-008) sem acionar a P5, ou seja, a defesa principal é o prompt e o código só confirma.
+- Dataset com 41 casos e contrato verde.
 
 ---
 
