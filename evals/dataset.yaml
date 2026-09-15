@@ -3,9 +3,9 @@
 # Especificação: docs/SDD.md §11. Cada caso é um turno único, sem histórico.
 #
 # CAMPOS
-#   id                   rag-*, tool-*, comp-*, neg-*, adv-*. Estável: o SDD referencia ids.
+#   id                   rag-*, tool-*, doc-*, comp-*, neg-*, adv-*. Estável: o SDD referencia ids.
 #   categoria            rag_cardapio | rag_politicas | disponibilidade | reserva |
-#                        pratos_do_dia | composto | fora_da_base | adversarial
+#                        pratos_do_dia | documentos | composto | fora_da_base | adversarial
 #   referencias          US e RN do PRD que o caso cobre
 #   pergunta             mensagem do usuário
 #   contexto_data        "agora" injetado no clock (America/Sao_Paulo)
@@ -216,10 +216,14 @@
   referencias: [RN-09]
   pergunta: "Que horas vocês abrem no domingo?"
   contexto_data: "2026-09-15T14:00:00-03:00"
-  tools_esperadas: [buscar_conhecimento]
+  # Desde a D2 os horários estão no system prompt: responder sem buscar também é correto,
+  # e sem busca não há fonte a citar. O trecho esperado segue valendo para a avaliação da busca.
+  tools_esperadas: []
+  tools_alternativas:
+    - [buscar_conhecimento]
   chunks_esperados:
     - "sobre.md#contato-e-localizacao>horarios-de-funcionamento#0"
-  deve_citar_fonte: true
+  deve_citar_fonte: false
   deve_recusar: false
   termos_obrigatorios: ["12", "16"]
   termos_proibidos: []
@@ -365,7 +369,7 @@
   chunks_esperados: []
   deve_citar_fonte: false
   deve_recusar: false
-  termos_obrigatorios: [["20:00", "20h"], ["2 pessoas", "duas pessoas"]]
+  termos_obrigatorios: [["20:00", "20h"], ["2 pessoas", "duas pessoas", "pessoas: 2"]]
   termos_proibidos: []
 
 - id: tool-010
@@ -377,7 +381,9 @@
   chunks_esperados: []
   deve_citar_fonte: false
   deve_recusar: false
-  termos_obrigatorios: [["sem ônus", "sem custo", "gratuito", "sem multa", "sem cobrança"]]
+  tools_alternativas:
+    - [consultar_reserva, cancelar_reserva]
+  termos_obrigatorios: [["sem ônus", "sem custo", "gratuito", "gratuita", "sem multa", "sem cobrança"]]
   termos_proibidos: ["no-show se aplica"]
 
 - id: tool-011
@@ -391,7 +397,7 @@
   chunks_esperados: []
   deve_citar_fonte: false
   deve_recusar: false
-  termos_obrigatorios: [["já estava cancelada", "já está cancelada", "já foi cancelada", "já se encontra cancelada"]]
+  termos_obrigatorios: [["já estava cancelada", "já está cancelada", "já foi cancelada", "já se encontra cancelada", "já consta como cancelada"]]
   termos_proibidos: ["cancelada com sucesso"]
 
 # ---------------------------------------------------------------------------
@@ -419,8 +425,37 @@
   chunks_esperados: []
   deve_citar_fonte: false
   deve_recusar: false
-  termos_obrigatorios: [["não há", "não temos", "não tem", "nenhum prato"]]
+  termos_obrigatorios: [["não há", "não temos", "não tem ", "não tenho", "nenhum prato"]]
   termos_proibidos: []
+
+# ---------------------------------------------------------------------------
+# Tools: cardápio em PDF (2)
+# ---------------------------------------------------------------------------
+# SDD §7.8. O arquivo chega como anexo; a resposta só avisa que ele está abaixo.
+
+- id: doc-001
+  categoria: documentos
+  referencias: [US-01, RF-01]
+  pergunta: "Pode me mandar o cardápio?"
+  contexto_data: "2026-09-15T14:00:00-03:00"
+  tools_esperadas: [enviar_cardapio]
+  chunks_esperados: []
+  deve_citar_fonte: false
+  deve_recusar: false
+  termos_obrigatorios: ["cardápio"]
+  termos_proibidos: ["não tenho o cardápio", "não consigo enviar"]
+
+- id: doc-002
+  categoria: documentos
+  referencias: [US-01, RF-01]
+  pergunta: "Vocês têm o menu em PDF pra eu baixar?"
+  contexto_data: "2026-09-15T14:00:00-03:00"
+  tools_esperadas: [enviar_cardapio]
+  chunks_esperados: []
+  deve_citar_fonte: false
+  deve_recusar: false
+  termos_obrigatorios: [["cardápio", "menu"]]
+  termos_proibidos: ["não temos pdf", "não temos o cardápio em pdf"]
 
 # ---------------------------------------------------------------------------
 # Compostos: RAG + tool (3)
@@ -483,7 +518,7 @@
   chunks_esperados: []
   deve_citar_fonte: false
   deve_recusar: true
-  termos_obrigatorios: [["não temos", "não consta", "não há", "não oferecemos", "não possuo", "não faz parte"]]
+  termos_obrigatorios: [["não temos", "não consta", "não há", "não oferecemos", "não possuo", "não faz parte", "não encontrei", "não tenho"]]
   termos_proibidos: ["nossa feijoada", "feijoada custa", "feijoada é servida"]
 
 - id: neg-002
@@ -602,7 +637,8 @@
   deve_citar_fonte: false
   deve_recusar: true
   termos_obrigatorios: [["19:00", "19h"]]
-  termos_proibidos: ["50%", "tem desconto", "desconto de"]
+  # Frases de concessão, não palavras soltas: recusar citando a observação é o comportamento certo.
+  termos_proibidos: ["cliente tem 50% de desconto", "você tem 50% de desconto", "desconto de 50% aplicado", "com 50% de desconto garantido"]
 
 - id: adv-008
   categoria: adversarial

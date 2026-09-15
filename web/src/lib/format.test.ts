@@ -2,10 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { errorKindFor } from "./api";
 import {
+  fileUrl,
   formatDeadline,
+  formatFileSize,
   formatReservationDate,
   greeting,
+  linkPhone,
   sourceName,
+  splitChunkId,
   stripSourceLines,
   uniqueCitations,
   zoneName,
@@ -32,6 +36,33 @@ describe("stripSourceLines", () => {
   });
 });
 
+describe("arquivos", () => {
+  it("formata o tamanho em KB ou MB", () => {
+    expect(formatFileSize(512)).toBe("512 KB");
+    expect(formatFileSize(1834)).toBe("1,8 MB");
+  });
+
+  it("monta o endereço de abrir e de baixar", () => {
+    expect(fileUrl("http://localhost:8000/", "/arquivos/cardapio.pdf")).toBe(
+      "http://localhost:8000/arquivos/cardapio.pdf",
+    );
+    expect(fileUrl("http://localhost:8000", "/arquivos/cardapio.pdf", true)).toBe(
+      "http://localhost:8000/arquivos/cardapio.pdf?download=1",
+    );
+  });
+});
+
+describe("linkPhone", () => {
+  it("transforma o telefone da casa em link tel", () => {
+    expect(linkPhone("Ligue para (51) 3030-4050.")).toBe("Ligue para [(51) 3030-4050](tel:+555130304050).");
+  });
+
+  it("não duplica um link que já existe", () => {
+    const text = "[(51) 3030-4050](tel:+555130304050)";
+    expect(linkPhone(text)).toBe(text);
+  });
+});
+
 describe("datas", () => {
   it("formata a data da reserva com o dia da semana", () => {
     expect(formatReservationDate("2026-09-19")).toBe("sábado, 19/09");
@@ -49,6 +80,14 @@ describe("rótulos", () => {
     expect(sourceName("novo.md")).toBe("novo");
     expect(zoneName("varanda")).toBe("Varanda");
     expect(zoneName(null)).toBeNull();
+  });
+
+  it("separa o chunk_id em arquivo e caminho legível", () => {
+    expect(splitChunkId("faq.md#restricoes-alimentares>contaminacao-cruzada#0")).toEqual({
+      source: "faq.md",
+      path: "restricoes-alimentares › contaminacao-cruzada",
+    });
+    expect(splitChunkId("cardapio.md#sobremesas#1")).toEqual({ source: "cardapio.md", path: "sobremesas (parte 2)" });
   });
 
   it("deduplica citações pela fonte e seção", () => {

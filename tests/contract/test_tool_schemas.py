@@ -45,8 +45,8 @@ def registry(tmp_path_factory: pytest.TempPathFactory) -> ToolRegistry:
     return build_registry(services, Retriever(HashingEmbedder(), store))
 
 
-def test_sdd_publica_as_seis_tools() -> None:
-    assert len(EXPECTED) == 6
+def test_sdd_publica_as_sete_tools() -> None:
+    assert len(EXPECTED) == 7
 
 
 def test_registry_expoe_exatamente_as_tools_do_sdd(registry: ToolRegistry) -> None:

@@ -10,10 +10,12 @@
   overflow-y: auto;
 }
 
+/* A conversa entra e sai por degradês: no topo, sob a barra; embaixo, sob o campo. */
 .thread {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable both-edges;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.75rem, #000 100%);
 }
 
 .log {

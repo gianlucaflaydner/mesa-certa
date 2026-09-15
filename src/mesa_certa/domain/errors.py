@@ -54,6 +54,11 @@ class NoAvailability(_CodedError):
     DEFAULT_MESSAGE = "Nenhuma mesa comporta o grupo neste horário."
 
 
+class MenuFileUnavailable(_CodedError):
+    CODE = "CARDAPIO_INDISPONIVEL"
+    DEFAULT_MESSAGE = "O arquivo do cardápio não está disponível no momento."
+
+
 class ReservationNotFound(_CodedError):
     CODE = "RESERVA_NAO_ENCONTRADA"
     DEFAULT_MESSAGE = "Nenhuma reserva encontrada com este código."

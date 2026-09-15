@@ -35,7 +35,12 @@ export function stripSourceLines(reply: string, hasCitations: boolean): string {
     .trim();
 }
 
-const WEEKDAYS = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
+/** O telefone da casa vira link `tel:` no markdown da resposta, sem mexer em links já existentes. */
+export function linkPhone(reply: string): string {
+  return reply.replace(/(?<!\[)\(51\)\s?3030-4050(?!\])/g, "[(51) 3030-4050](tel:+555130304050)");
+}
+
+const WEEKDAYS =["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"];
 
 /** "2026-09-19" vira "sábado, 19/09". Sem Date com fuso: a data da reserva é local da casa. */
 export function formatReservationDate(isoDate: string, weekday?: string | null): string {
@@ -57,6 +62,25 @@ export function formatDeadline(isoDateTime: string): string {
 export function zoneName(zone: string | null | undefined): string | null {
   if (!zone) return null;
   return { salao: "Salão principal", varanda: "Varanda", mezanino: "Mezanino" }[zone] ?? zone;
+}
+
+/** "faq.md#restricoes-alimentares>contaminacao-cruzada#0" vira arquivo e caminho legíveis. */
+export function splitChunkId(chunkId: string): { source: string; path: string } {
+  const [source = chunkId, path = "", part = "0"] = chunkId.split("#");
+  const readable = path.split(">").filter(Boolean).join(" › ");
+  return { source, path: part !== "0" ? `${readable} (parte ${Number(part) + 1})` : readable };
+}
+
+/** 1834 vira "1,8 MB"; 512 vira "512 KB". */
+export function formatFileSize(kb: number): string {
+  if (kb < 1024) return `${Math.max(1, Math.round(kb))} KB`;
+  return `${(kb / 1024).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} MB`;
+}
+
+/** Endereço absoluto de um arquivo servido pela API, com a variante de download. */
+export function fileUrl(apiUrl: string, path: string, download = false): string {
+  const base = `${apiUrl.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+  return download ? `${base}${base.includes("?") ? "&" : "?"}download=1` : base;
 }
 
 export function greeting(hour: number): string {

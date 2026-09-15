@@ -41,8 +41,10 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
   useLayoutEffect(() => {
     const field = fieldRef.current;
     if (!field) return;
+    const max = variant === "hero" ? 320 : 240;
     field.style.height = "auto";
-    field.style.height = `${Math.min(field.scrollHeight, variant === "hero" ? 320 : 240)}px`;
+    field.style.height = `${Math.min(field.scrollHeight, max)}px`;
+    field.dataset.full = String(field.scrollHeight > max);
   }, [text, variant]);
 
   const trimmed = text.trim();
@@ -99,9 +101,7 @@ export const Composer = forwardRef<ComposerHandle, Props>(function Composer(
             <span className={tooLong ? styles.error : undefined}>
               {text.length.toLocaleString("pt-BR")} de {MAX_MESSAGE_CHARS.toLocaleString("pt-BR")} caracteres
             </span>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </p>
         <button type="submit" className={styles.send} disabled={!ready} aria-label={busy ? "Aguardando resposta" : "Enviar mensagem"}>
           <ArrowUp size={18} strokeWidth={2.25} aria-hidden="true" />

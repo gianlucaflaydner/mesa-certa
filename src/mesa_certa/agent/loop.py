@@ -13,6 +13,7 @@ from anthropic.types import Message
 from mesa_certa.agent.guards import ToolOutcome, check_reply
 from mesa_certa.agent.llm import LLMClient
 from mesa_certa.agent.models import (
+    Attachment,
     Citation,
     ReservationEvent,
     ReservationKind,
@@ -26,6 +27,7 @@ from mesa_certa.domain.rules import RESTAURANT_PHONE
 from mesa_certa.observability.tracing import KNOWLEDGE_TOOL, Trace, Tracer
 from mesa_certa.sanitize import MAX_MESSAGE_CHARS, clean_message
 from mesa_certa.tools.base import ToolResult
+from mesa_certa.tools.documents import NAME as DOCUMENT_TOOL
 from mesa_certa.tools.registry import ToolRegistry
 
 TRACE_ID_ATTR = "trace_id"
@@ -83,6 +85,7 @@ class AgentLoop:
                     turn.reply = _final_reply(response)
                     self._guard_reply(session, turn, trace, outcomes)
                     turn.reservation = _reservation_event(outcomes)
+                    turn.attachments = _attachments(outcomes)
                     return self._finish(turn, trace, started)
 
                 session.append_assistant(b.to_dict(mode="json") for b in response.content)
@@ -198,6 +201,23 @@ def _reservation_event(outcomes: list[ToolOutcome]) -> ReservationEvent | None:
         if kind is not None and outcome.ok and outcome.data is not None:
             return ReservationEvent(kind, dict(outcome.data))
     return None
+
+
+def _attachments(outcomes: list[ToolOutcome]) -> list[Attachment]:
+    """Arquivos entregues com sucesso no turno, um por tipo."""
+    found: dict[str, Attachment] = {}
+    for outcome in outcomes:
+        data = outcome.data
+        if outcome.name != DOCUMENT_TOOL or not outcome.ok or data is None:
+            continue
+        found[str(data["tipo"])] = Attachment(
+            kind=str(data["tipo"]),
+            title=str(data["titulo"]),
+            filename=str(data["arquivo"]),
+            url=str(data["url"]),
+            size_kb=int(data["tamanho_kb"]),
+        )
+    return list(found.values())
 
 
 def _collect_citations(result: ToolResult, citations: list[Citation]) -> None:

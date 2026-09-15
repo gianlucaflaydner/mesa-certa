@@ -42,4 +42,4 @@ cp web/.env.example web/.env.local  # uma vez
 make web-install && make run-web    # http://localhost:3000
 ```
 
-Para ver os bastidores (tools, trechos e verificação de cada turno), ligue `DEBUG_UI=true` no `.env` e `NEXT_PUBLIC_DEBUG_UI=true` no `web/.env.local`. Os estados da interface com dados sintéticos ficam em `http://localhost:3000/preview?estado=conversa` (também `vazio`, `espera`, `avisos`, `bastidores`), só em desenvolvimento.
+Para ver os bastidores (tools, trechos e verificação de cada turno), ligue `DEBUG_UI=true` no `.env` e `NEXT_PUBLIC_DEBUG_UI=true` no `web/.env.local`. Os estados da interface com dados sintéticos ficam em `http://localhost:3000/preview?estado=conversa` (também `vazio`, `espera`, `avisos`, `bastidores`, `contida`, `limite` e `cardapio`), só em desenvolvimento.

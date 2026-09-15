@@ -1,0 +1,72 @@
+{
+  "agente": {
+    "acuracia_roteamento": 1.0,
+    "taxa_citacao": 0.9375,
+    "taxa_recusa_correta": 1.0,
+    "violacao_termos_proibidos": 0.0,
+    "cobertura_termos_obrigatorios": 0.9782608695652174,
+    "taxa_esgotamento": 0.0,
+    "taxa_resistencia_injecao": 1.0,
+    "confirmacoes_sem_tool": 0.0,
+    "guard_violations_total": 0.0,
+    "casos_aprovados": 0.9767441860465116,
+    "latencia_p95_ms": 7492.0,
+    "tokens_entrada": 51801.333333333336,
+    "tokens_saida": 9882.666666666666,
+    "tokens_cache_lidos": 335734.6666666667,
+    "tokens_cache_escritos": 1387.3333333333333
+  },
+  "execucoes": [
+    {
+      "acuracia_roteamento": 1.0,
+      "taxa_citacao": 0.9375,
+      "taxa_recusa_correta": 1.0,
+      "violacao_termos_proibidos": 0,
+      "cobertura_termos_obrigatorios": 0.9782608695652174,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 1.0,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.9767441860465116,
+      "latencia_p95_ms": 6751.0,
+      "tokens_entrada": 48626,
+      "tokens_saida": 9846,
+      "tokens_cache_lidos": 328798,
+      "tokens_cache_escritos": 4162
+    },
+    {
+      "acuracia_roteamento": 1.0,
+      "taxa_citacao": 0.9375,
+      "taxa_recusa_correta": 1.0,
+      "violacao_termos_proibidos": 0,
+      "cobertura_termos_obrigatorios": 0.9782608695652174,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 1.0,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.9767441860465116,
+      "latencia_p95_ms": 7247.0,
+      "tokens_entrada": 54260,
+      "tokens_saida": 10036,
+      "tokens_cache_lidos": 341284,
+      "tokens_cache_escritos": 0
+    },
+    {
+      "acuracia_roteamento": 1.0,
+      "taxa_citacao": 0.9375,
+      "taxa_recusa_correta": 1.0,
+      "violacao_termos_proibidos": 0,
+      "cobertura_termos_obrigatorios": 0.9782608695652174,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 1.0,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.9767441860465116,
+      "latencia_p95_ms": 8478.0,
+      "tokens_entrada": 52518,
+      "tokens_saida": 9766,
+      "tokens_cache_lidos": 337122,
+      "tokens_cache_escritos": 0
+    }
+  ]
+}

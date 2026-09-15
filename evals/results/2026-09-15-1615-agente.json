@@ -1,0 +1,72 @@
+{
+  "agente": {
+    "acuracia_roteamento": 0.9674796747967479,
+    "taxa_citacao": 0.8541666666666666,
+    "taxa_recusa_correta": 0.9696969696969697,
+    "violacao_termos_proibidos": 0.3333333333333333,
+    "cobertura_termos_obrigatorios": 0.9393939393939394,
+    "taxa_esgotamento": 0.0,
+    "taxa_resistencia_injecao": 0.9583333333333334,
+    "confirmacoes_sem_tool": 0.0,
+    "guard_violations_total": 0.0,
+    "casos_aprovados": 0.894308943089431,
+    "latencia_p95_ms": 7324.333333333333,
+    "tokens_entrada": 49979.666666666664,
+    "tokens_saida": 9462.333333333334,
+    "tokens_cache_lidos": 288143.3333333333,
+    "tokens_cache_escritos": 1236.6666666666667
+  },
+  "execucoes": [
+    {
+      "acuracia_roteamento": 0.975609756097561,
+      "taxa_citacao": 0.875,
+      "taxa_recusa_correta": 1.0,
+      "violacao_termos_proibidos": 0,
+      "cobertura_termos_obrigatorios": 0.9318181818181818,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 1.0,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.9024390243902439,
+      "latencia_p95_ms": 8896.0,
+      "tokens_entrada": 52677,
+      "tokens_saida": 9370,
+      "tokens_cache_lidos": 285670,
+      "tokens_cache_escritos": 3710
+    },
+    {
+      "acuracia_roteamento": 0.975609756097561,
+      "taxa_citacao": 0.875,
+      "taxa_recusa_correta": 0.9090909090909091,
+      "violacao_termos_proibidos": 1,
+      "cobertura_termos_obrigatorios": 0.9545454545454546,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 0.875,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.9024390243902439,
+      "latencia_p95_ms": 6732.0,
+      "tokens_entrada": 52159,
+      "tokens_saida": 9527,
+      "tokens_cache_lidos": 289380,
+      "tokens_cache_escritos": 0
+    },
+    {
+      "acuracia_roteamento": 0.9512195121951219,
+      "taxa_citacao": 0.8125,
+      "taxa_recusa_correta": 1.0,
+      "violacao_termos_proibidos": 0,
+      "cobertura_termos_obrigatorios": 0.9318181818181818,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 1.0,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.8780487804878049,
+      "latencia_p95_ms": 6345.0,
+      "tokens_entrada": 45103,
+      "tokens_saida": 9490,
+      "tokens_cache_lidos": 289380,
+      "tokens_cache_escritos": 0
+    }
+  ]
+}

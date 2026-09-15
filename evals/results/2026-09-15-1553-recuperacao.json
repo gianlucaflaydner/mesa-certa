@@ -1,0 +1,18 @@
+{
+  "recuperacao": {
+    "casos": 17,
+    "hit_1": 0.5882352941176471,
+    "hit_3": 0.9411764705882353,
+    "hit_5": 0.9411764705882353,
+    "mrr": 0.7549019607843137,
+    "latencia_p95_ms": 15.989299998182105,
+    "misses": [
+      "comp-001"
+    ]
+  },
+  "limiar_recomendado": {
+    "threshold": 0.85,
+    "recall": 0.8823529411764706,
+    "false_positive_rate": 0.0
+  }
+}

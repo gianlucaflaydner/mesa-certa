@@ -94,7 +94,9 @@ def build_app(
         menu=MenuService(factory),
         clock=clock,
     )
-    registry = build_registry(services, build_retriever(settings, embedder, store))
+    registry = build_registry(
+        services, build_retriever(settings, embedder, store), menu_pdf_path=settings.menu_pdf_path
+    )
     tracer = Tracer(clock, settings.trace_path)
     agent = AgentLoop(
         llm or build_llm(settings),

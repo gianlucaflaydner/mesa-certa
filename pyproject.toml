@@ -14,7 +14,6 @@ dependencies = [
     "pydantic-settings>=2.4",
     "sentence-transformers>=3.0",
     "sqlalchemy>=2.0",
-    "streamlit>=1.38",
     "structlog>=24.4",
     "torch>=2.4",
     "tzdata>=2024.1",
@@ -54,7 +53,7 @@ torch = [{ index = "pytorch-cpu" }]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-src = ["src", "tests"]
+src = ["src", "tests", "."]
 # Blocos de código em docs são ilustrativos, não código do projeto.
 extend-exclude = ["*.md"]
 

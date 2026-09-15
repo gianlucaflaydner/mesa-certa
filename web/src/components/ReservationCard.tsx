@@ -38,18 +38,22 @@ export function ReservationCard({ reservation: r }: { reservation: Reservation }
   }
   const zone = zoneName(r.zona);
   if (zone) facts.push({ label: "Onde", value: zone });
-  if (r.tolerancia_minutos && !cancelled) facts.push({ label: "Tolerância", value: `${r.tolerancia_minutos} min` });
 
-  const footer =
-    r.tipo === "cancelada"
-      ? r.dentro_da_janela_gratuita === false
+  // Condições da reserva ficam no rodapé, em frase; os campos acima são só os dados da mesa.
+  const conditions: string[] = [];
+  if (r.tolerancia_minutos && !cancelled) conditions.push(`Tolerância de ${r.tolerancia_minutos} min de atraso.`);
+  if (r.tipo === "cancelada") {
+    conditions.push(
+      r.dentro_da_janela_gratuita === false
         ? (r.aviso ?? "Cancelamento com menos de 4 horas de antecedência.")
-        : "Cancelamento sem custo."
-      : r.cancelamento_sem_onus_ate && !cancelled
-        ? `Cancelamento sem custo até ${formatDeadline(r.cancelamento_sem_onus_ate)}.`
-        : r.situacao
-          ? `Situação no sistema: ${r.situacao.toLowerCase()}.`
-          : null;
+        : "Cancelamento sem custo.",
+    );
+  } else if (r.cancelamento_sem_onus_ate && !cancelled) {
+    conditions.push(`Cancelamento sem custo até ${formatDeadline(r.cancelamento_sem_onus_ate)}.`);
+  } else if (r.situacao) {
+    conditions.push(`Situação no sistema: ${r.situacao.toLowerCase()}.`);
+  }
+  const footer = conditions.length > 0 ? conditions.join(" ") : null;
 
   return (
     <section className={`${styles.card} ${cancelled ? styles.cancelled : styles[r.tipo]}`} aria-label={title}>
@@ -66,10 +70,12 @@ export function ReservationCard({ reservation: r }: { reservation: Reservation }
           <span className={styles.codeLabel}>Código</span>
           <p className={styles.code}>{r.codigo}</p>
         </div>
-        <button type="button" className={styles.copy} onClick={copyCode}>
-          {copied ? <Check size={15} strokeWidth={2} aria-hidden="true" /> : <Copy size={15} strokeWidth={1.75} aria-hidden="true" />}
-          {copied ? "Copiado" : "Copiar"}
-        </button>
+        {cancelled ? null : (
+          <button type="button" className={styles.copy} onClick={copyCode}>
+            {copied ? <Check size={15} strokeWidth={2} aria-hidden="true" /> : <Copy size={15} strokeWidth={1.75} aria-hidden="true" />}
+            {copied ? "Copiado" : "Copiar"}
+          </button>
+        )}
       </div>
 
       {facts.length > 0 ? (

@@ -45,10 +45,35 @@
   font-size: 1.125rem;
 }
 
+/* Campo ancorado: uma linha só, com o botão ao lado; o status só aparece quando há o que dizer. */
+.dock {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "input send"
+    "status status";
+  align-items: end;
+}
+
 .dock .input {
-  min-height: 3.1rem;
-  padding: 0.9rem 1.1rem 0.2rem;
+  grid-area: input;
+  min-height: 3.25rem;
+  padding: 0.85rem 0.5rem 0.85rem 1.1rem;
   font-size: 1rem;
+}
+
+.dock .toolbar {
+  display: contents;
+}
+
+.dock .send {
+  grid-area: send;
+  margin: 0 0.55rem 0.5rem 0;
+}
+
+.dock .status {
+  grid-area: status;
+  padding: 0 1.1rem 0.6rem;
 }
 
 .toolbar {
@@ -56,10 +81,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.35rem 0.55rem 0.55rem 1.1rem;
-}
-
-.hero .toolbar {
   padding: 0.5rem 0.7rem 0.7rem 1.25rem;
 }
 
@@ -68,6 +89,20 @@
   min-width: 0;
   font-size: 0.8rem;
   color: var(--text-3);
+}
+
+.status:empty {
+  display: none;
+}
+
+.hero .status:empty {
+  display: block;
+}
+
+/* No limite de altura o texto rola; o fim some num degradê em vez de ser cortado seco. */
+.input[data-full="true"] {
+  padding-bottom: 1.5rem;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.75rem), transparent calc(100% - 0.5rem));
 }
 
 .hint {

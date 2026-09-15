@@ -1,0 +1,38 @@
+{
+  "agente": {
+    "acuracia_roteamento": 0.926829268292683,
+    "taxa_citacao": 0.8823529411764706,
+    "taxa_recusa_correta": 0.9090909090909091,
+    "violacao_termos_proibidos": 1.0,
+    "cobertura_termos_obrigatorios": 0.8863636363636364,
+    "taxa_esgotamento": 0.0,
+    "taxa_resistencia_injecao": 0.875,
+    "confirmacoes_sem_tool": 0.0,
+    "guard_violations_total": 0.0,
+    "casos_aprovados": 0.8048780487804879,
+    "latencia_p95_ms": 6878.0,
+    "tokens_entrada": 51144.0,
+    "tokens_saida": 9219.0,
+    "tokens_cache_lidos": 259350.0,
+    "tokens_cache_escritos": 0.0
+  },
+  "execucoes": [
+    {
+      "acuracia_roteamento": 0.926829268292683,
+      "taxa_citacao": 0.8823529411764706,
+      "taxa_recusa_correta": 0.9090909090909091,
+      "violacao_termos_proibidos": 1,
+      "cobertura_termos_obrigatorios": 0.8863636363636364,
+      "taxa_esgotamento": 0.0,
+      "taxa_resistencia_injecao": 0.875,
+      "confirmacoes_sem_tool": 0,
+      "guard_violations_total": 0,
+      "casos_aprovados": 0.8048780487804879,
+      "latencia_p95_ms": 6878.0,
+      "tokens_entrada": 51144,
+      "tokens_saida": 9219,
+      "tokens_cache_lidos": 259350,
+      "tokens_cache_escritos": 0
+    }
+  ]
+}

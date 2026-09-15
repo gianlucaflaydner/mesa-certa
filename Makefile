@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test cov ingest search seed chat eval run-api run-web web-install web-check
+.PHONY: install lint format typecheck test cov ingest search seed chat eval eval-retrieval eval-threshold-sweep run-api run-web web-install web-check
 
 UV ?= uv
 
@@ -14,7 +14,7 @@ format:
 	$(UV) run ruff format .
 
 typecheck:
-	$(UV) run mypy src tests scripts
+	$(UV) run mypy src tests scripts evals
 
 test:
 	$(UV) run pytest -m "not e2e"
@@ -36,8 +36,15 @@ seed:
 chat:
 	$(UV) run python scripts/chat.py $(ARGS)
 
+# Avaliação (SDD §11). Só a busca e a varredura do limiar: sem custo de API.
+eval-retrieval:
+	$(UV) run python -m evals.retrieval
+
+eval-threshold-sweep: eval-retrieval
+
+# Agente completo com a API real (custa chamadas). Ex.: make eval ARGS="--repeticoes 3"
 eval:
-	@echo "eval: entra na F6"
+	$(UV) run python -m evals.runner $(ARGS)
 
 # API em http://localhost:8000. Para a demo, fixe o relógio do seed: FIXED_NOW no .env.
 run-api:

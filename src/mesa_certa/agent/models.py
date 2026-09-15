@@ -16,6 +16,17 @@ class ReservationEvent:
 
 
 @dataclass(frozen=True)
+class Attachment:
+    """Arquivo entregue ao cliente no turno, com os dados exatos que a tool devolveu."""
+
+    kind: str
+    title: str
+    filename: str
+    url: str
+    size_kb: int
+
+
+@dataclass(frozen=True)
 class Citation:
     source: str
     section: str
@@ -61,5 +72,6 @@ class TurnResult:
     exhausted: bool = False
     guard_violations: list[str] = field(default_factory=list)
     reservation: ReservationEvent | None = None
+    attachments: list[Attachment] = field(default_factory=list)
     latency_ms: int = 0
     usage: TokenUsage = field(default_factory=TokenUsage)

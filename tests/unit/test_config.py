@@ -26,7 +26,7 @@ def test_defaults_sem_env(ambiente_limpo: pytest.MonkeyPatch) -> None:
     assert s.chroma_collection == "mesa_certa_kb"
     assert s.knowledge_path == Path("./data/knowledge")
     assert s.rag_top_k == 4
-    assert s.rag_similarity_threshold == 0.72
+    assert s.rag_similarity_threshold == 0.85
     assert s.rag_max_context_chars == 4000
     assert s.database_url == "sqlite:///./data/mesa_certa.db"
     assert s.agent_max_iterations == 8

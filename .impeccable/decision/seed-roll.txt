@@ -2,3 +2,4 @@
 ASSIGNED INDEX: 6
   After ordering the grounded directions by resonance, build candidate
 ANSWER: {"optionId":"assigned","steer":""} (Grelha de brasa, candidata 6)
+SUBSTITUIDA 2026-09-15: o usuário descartou a Grelha de brasa e escolheu o padrão da categoria (canon), referências ChatGPT e Claude. Ver PRODUCT.md.

@@ -1,0 +1,97 @@
+.card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 34rem;
+  margin-top: 1rem;
+  padding: 0.75rem 0.75rem 0.75rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-s);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.info {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  margin: 0.1rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.88rem;
+  font-weight: 540;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 160ms var(--ease-saida),
+    color 160ms var(--ease-saida);
+}
+
+.action:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.primary {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--surface);
+}
+
+.primary:hover {
+  background: #000;
+  color: var(--surface);
+}
+
+@media (max-width: 520px) {
+  .card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+  }
+
+  .action {
+    flex: 1;
+    justify-content: center;
+  }
+}

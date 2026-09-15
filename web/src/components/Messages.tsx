@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 import type { ChatResponse } from "@/lib/api";
-import { stripSourceLines } from "@/lib/format";
+import { linkPhone, stripSourceLines } from "@/lib/format";
 
+import { AttachmentCard } from "./AttachmentCard";
 import { BrandMark } from "./BrandMark";
 import { ReservationCard } from "./ReservationCard";
 import { Sources } from "./Sources";
@@ -35,7 +36,7 @@ type AssistantProps = {
 };
 
 export function AssistantMessage({ response, onInspect, inspected }: AssistantProps) {
-  const text = stripSourceLines(response.reply, response.citations.length > 0);
+  const text = linkPhone(stripSourceLines(response.reply, response.citations.length > 0));
   // Contida: a verificação trocou a resposta ou o turno estourou o limite de iterações.
   const held = response.guard_violations.length > 0 || response.exhausted;
 
@@ -53,17 +54,25 @@ export function AssistantMessage({ response, onInspect, inspected }: AssistantPr
           <ReactMarkdown
             disallowedElements={["img", "script", "iframe"]}
             components={{
-              a: ({ href, children }) => (
-                <a href={href} target="_blank" rel="noreferrer">
-                  {children}
-                </a>
-              ),
+              a: ({ href, children }) =>
+                href?.startsWith("tel:") ? (
+                  <a href={href} className={styles.phone}>
+                    {children}
+                  </a>
+                ) : (
+                  <a href={href} target="_blank" rel="noreferrer">
+                    {children}
+                  </a>
+                ),
             }}
           >
             {text}
           </ReactMarkdown>
         </div>
         {response.reservation ? <ReservationCard reservation={response.reservation} /> : null}
+        {(response.attachments ?? []).map((attachment) => (
+          <AttachmentCard key={attachment.url} attachment={attachment} />
+        ))}
         <Sources citations={response.citations} />
         {onInspect ? (
           <div className={styles.actions}>

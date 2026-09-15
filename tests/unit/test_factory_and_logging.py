@@ -59,7 +59,7 @@ def test_build_app_monta_agente_que_conclui_turno(settings: Settings) -> None:
         result = app.agent.run_turn(session, "oi")
 
         assert result.reply == "Olá!"
-        assert len(app.registry.names) == 6
+        assert len(app.registry.names) == 7
         assert app.tracer.get(result.trace_id) is not None
         assert (settings.trace_path / "2026-09-15.jsonl").exists()
     finally:

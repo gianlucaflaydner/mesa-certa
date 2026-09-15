@@ -169,10 +169,27 @@
 }
 
 .chunkId {
+  display: grid;
+  min-width: 0;
   font-family: var(--font-dados);
   font-size: 0.72rem;
-  color: var(--text-2);
-  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.chunkSource {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.chunkPath,
+.chunkSource {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chunkPath {
+  color: var(--text-3);
 }
 
 .scoreTrack {

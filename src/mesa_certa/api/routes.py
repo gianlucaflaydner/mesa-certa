@@ -7,11 +7,13 @@ fora disso respondem 404, como se não existissem.
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi.responses import FileResponse
 from sqlalchemy import text
 
 from mesa_certa.agent.factory import AgentApp
 from mesa_certa.api.dto import ChatRequest, ChatResponse, ErrorOut, HealthOut, ReindexOut
 from mesa_certa.rag.ingest import ingest_directory
+from mesa_certa.tools.documents import MENU_PDF_DOWNLOAD_NAME
 
 router = APIRouter()
 debug_router = APIRouter()
@@ -55,6 +57,20 @@ def health(agent_app: App, response: Response) -> HealthOut:
     if not healthy:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return HealthOut(status="ok" if healthy else "degradado", checks=checks)
+
+
+@router.get("/arquivos/cardapio.pdf", response_class=FileResponse)
+def menu_pdf(agent_app: App, download: bool = False) -> FileResponse:
+    """Cardápio completo. `?download=1` pede ao navegador para salvar em vez de abrir."""
+    path = agent_app.settings.menu_pdf_path
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="CARDAPIO_INDISPONIVEL")
+    return FileResponse(
+        path,
+        media_type="application/pdf",
+        filename=MENU_PDF_DOWNLOAD_NAME,
+        content_disposition_type="attachment" if download else "inline",
+    )
 
 
 @debug_router.get("/traces/{trace_id}", dependencies=[Depends(require_debug)])

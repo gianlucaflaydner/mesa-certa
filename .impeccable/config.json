@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "#000",
+        "createdAt": "2026-09-15T18:57:21.143Z",
+        "reason": "assistente: #000 é o canal alfa de mask-image (degradê de rolagem), não cor visível da paleta"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "0.82rem",
+        "createdAt": "2026-09-15T18:57:21.199Z",
+        "reason": "assistente: passo documentado na prosa do DESIGN.md (Label, Caption e Data, 0.82rem), só falta na lista do frontmatter"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.125rem",
+        "createdAt": "2026-09-15T18:57:21.263Z",
+        "reason": "assistente: Body Large do DESIGN.md (1.0625rem a 1.125rem), texto do campo grande no estado vazio"
+      }
+    ]
+  }
+}

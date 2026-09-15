@@ -45,6 +45,16 @@ class ReservationOut(BaseModel):
     aviso: str | None = None
 
 
+class AttachmentOut(BaseModel):
+    """Arquivo para o cliente abrir ou baixar. `url` é relativa ao endereço da API."""
+
+    tipo: str
+    titulo: str
+    arquivo: str
+    url: str
+    tamanho_kb: int
+
+
 class ChatResponse(BaseModel):
     session_id: str
     trace_id: str
@@ -56,6 +66,7 @@ class ChatResponse(BaseModel):
     exhausted: bool
     guard_violations: list[str]
     reservation: ReservationOut | None
+    attachments: list[AttachmentOut]
 
     @classmethod
     def from_turn(cls, turn: TurnResult) -> "ChatResponse":
@@ -68,6 +79,12 @@ class ChatResponse(BaseModel):
         )
         return cls(
             reservation=reservation,
+            attachments=[
+                AttachmentOut(
+                    tipo=a.kind, titulo=a.title, arquivo=a.filename, url=a.url, tamanho_kb=a.size_kb
+                )
+                for a in turn.attachments
+            ],
             session_id=turn.session_id,
             trace_id=turn.trace_id,
             reply=turn.reply,

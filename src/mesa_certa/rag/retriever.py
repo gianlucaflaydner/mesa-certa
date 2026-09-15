@@ -43,7 +43,7 @@ class Retriever:
         embedder: TextEmbedder,
         store: ChunkStore,
         top_k: int = 4,
-        similarity_threshold: float = 0.72,
+        similarity_threshold: float = 0.85,
         max_context_chars: int = 4000,
     ) -> None:
         self._embedder = embedder

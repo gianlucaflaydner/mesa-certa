@@ -17,6 +17,9 @@ venv/
 .coverage
 htmlcov/
 
+# Respostas brutas da avaliação (o relatório .md e o .json ficam versionados)
+evals/results/raw/
+
 # Capturas de revisão visual (regeneráveis)
 .impeccable/review/
 

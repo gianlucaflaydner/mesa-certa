@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-15T18:42:06.077Z",
+  "title": "Design System: Mesa Certa",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Papel Quente",
+        "canonical": "#faf9f6",
+        "cssVar": "--bg",
+        "tonalRamp": [
+          "oklch(15% 0.004 91.4)",
+          "oklch(26% 0.004 91.4)",
+          "oklch(37% 0.004 91.4)",
+          "oklch(48% 0.004 91.4)",
+          "oklch(60% 0.004 91.4)",
+          "oklch(72% 0.004 91.4)",
+          "oklch(84% 0.004 91.4)",
+          "oklch(95% 0.004 91.4)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Branco de Superfície",
+        "canonical": "#ffffff",
+        "cssVar": "--surface",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(60% 0.000 89.9)",
+          "oklch(72% 0.000 89.9)",
+          "oklch(84% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Linho",
+        "canonical": "#f2efe9",
+        "cssVar": "--surface-2",
+        "tonalRamp": [
+          "oklch(15% 0.009 84.6)",
+          "oklch(26% 0.009 84.6)",
+          "oklch(37% 0.009 84.6)",
+          "oklch(48% 0.009 84.6)",
+          "oklch(60% 0.009 84.6)",
+          "oklch(72% 0.009 84.6)",
+          "oklch(84% 0.009 84.6)",
+          "oklch(95% 0.009 84.6)"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Linho Escuro",
+        "canonical": "#ebe7df",
+        "cssVar": "--surface-3",
+        "tonalRamp": [
+          "oklch(15% 0.012 84.6)",
+          "oklch(26% 0.012 84.6)",
+          "oklch(37% 0.012 84.6)",
+          "oklch(48% 0.012 84.6)",
+          "oklch(60% 0.012 84.6)",
+          "oklch(72% 0.012 84.6)",
+          "oklch(84% 0.012 84.6)",
+          "oklch(95% 0.012 84.6)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Borda",
+        "canonical": "#e5e1d9",
+        "cssVar": "--border",
+        "tonalRamp": [
+          "oklch(15% 0.012 84.6)",
+          "oklch(26% 0.012 84.6)",
+          "oklch(37% 0.012 84.6)",
+          "oklch(48% 0.012 84.6)",
+          "oklch(60% 0.012 84.6)",
+          "oklch(72% 0.012 84.6)",
+          "oklch(84% 0.012 84.6)",
+          "oklch(95% 0.012 84.6)"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Borda Firme",
+        "canonical": "#d3cdc2",
+        "cssVar": "--border-strong",
+        "tonalRamp": [
+          "oklch(15% 0.016 82.8)",
+          "oklch(26% 0.016 82.8)",
+          "oklch(37% 0.016 82.8)",
+          "oklch(48% 0.016 82.8)",
+          "oklch(60% 0.016 82.8)",
+          "oklch(72% 0.016 82.8)",
+          "oklch(84% 0.016 82.8)",
+          "oklch(95% 0.016 82.8)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "#1f1e1c",
+        "cssVar": "--text",
+        "tonalRamp": [
+          "oklch(15% 0.004 84.6)",
+          "oklch(26% 0.004 84.6)",
+          "oklch(37% 0.004 84.6)",
+          "oklch(48% 0.004 84.6)",
+          "oklch(60% 0.004 84.6)",
+          "oklch(72% 0.004 84.6)",
+          "oklch(84% 0.004 84.6)",
+          "oklch(95% 0.004 84.6)"
+        ]
+      },
+      "text-2": {
+        "role": "neutral",
+        "displayName": "Tinta Média",
+        "canonical": "#55524c",
+        "cssVar": "--text-2",
+        "tonalRamp": [
+          "oklch(15% 0.010 84.6)",
+          "oklch(26% 0.010 84.6)",
+          "oklch(37% 0.010 84.6)",
+          "oklch(48% 0.010 84.6)",
+          "oklch(60% 0.010 84.6)",
+          "oklch(72% 0.010 84.6)",
+          "oklch(84% 0.010 84.6)",
+          "oklch(95% 0.010 84.6)"
+        ]
+      },
+      "text-3": {
+        "role": "neutral",
+        "displayName": "Tinta Clara",
+        "canonical": "#736f68",
+        "cssVar": "--text-3",
+        "tonalRamp": [
+          "oklch(15% 0.012 81.8)",
+          "oklch(26% 0.012 81.8)",
+          "oklch(37% 0.012 81.8)",
+          "oklch(48% 0.012 81.8)",
+          "oklch(60% 0.012 81.8)",
+          "oklch(72% 0.012 81.8)",
+          "oklch(84% 0.012 81.8)",
+          "oklch(95% 0.012 81.8)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Brasa",
+        "canonical": "#c2461c",
+        "cssVar": "--accent",
+        "tonalRamp": [
+          "oklch(15% 0.167 37.7)",
+          "oklch(26% 0.167 37.7)",
+          "oklch(37% 0.167 37.7)",
+          "oklch(48% 0.167 37.7)",
+          "oklch(60% 0.167 37.7)",
+          "oklch(72% 0.167 37.7)",
+          "oklch(84% 0.040 37.7)",
+          "oklch(95% 0.040 37.7)"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "Brasa Funda",
+        "canonical": "#a63a15",
+        "cssVar": "--accent-hover",
+        "tonalRamp": [
+          "oklch(15% 0.150 37.7)",
+          "oklch(26% 0.150 37.7)",
+          "oklch(37% 0.150 37.7)",
+          "oklch(48% 0.150 37.7)",
+          "oklch(60% 0.150 37.7)",
+          "oklch(72% 0.150 37.7)",
+          "oklch(84% 0.040 37.7)",
+          "oklch(95% 0.040 37.7)"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Brasa Rosada",
+        "canonical": "#f7e6dd",
+        "cssVar": "--accent-soft",
+        "tonalRamp": [
+          "oklch(15% 0.022 49.9)",
+          "oklch(26% 0.022 49.9)",
+          "oklch(37% 0.022 49.9)",
+          "oklch(48% 0.022 49.9)",
+          "oklch(60% 0.022 49.9)",
+          "oklch(72% 0.022 49.9)",
+          "oklch(84% 0.022 49.9)",
+          "oklch(95% 0.022 49.9)"
+        ]
+      },
+      "accent-text": {
+        "role": "primary",
+        "displayName": "Brasa Escrita",
+        "canonical": "#9c3713",
+        "cssVar": "--accent-text",
+        "tonalRamp": [
+          "oklch(15% 0.142 38.1)",
+          "oklch(26% 0.142 38.1)",
+          "oklch(37% 0.142 38.1)",
+          "oklch(48% 0.142 38.1)",
+          "oklch(60% 0.142 38.1)",
+          "oklch(72% 0.142 38.1)",
+          "oklch(84% 0.040 38.1)",
+          "oklch(95% 0.040 38.1)"
+        ]
+      },
+      "ok": {
+        "role": "state",
+        "displayName": "Verde Confirmado",
+        "canonical": "#2f6b4f",
+        "cssVar": "--ok",
+        "tonalRamp": [
+          "oklch(15% 0.078 161.1)",
+          "oklch(26% 0.078 161.1)",
+          "oklch(37% 0.078 161.1)",
+          "oklch(48% 0.078 161.1)",
+          "oklch(60% 0.078 161.1)",
+          "oklch(72% 0.078 161.1)",
+          "oklch(84% 0.040 161.1)",
+          "oklch(95% 0.040 161.1)"
+        ]
+      },
+      "ok-soft": {
+        "role": "state",
+        "displayName": "Verde Confirmado Suave",
+        "canonical": "#e3efe8",
+        "cssVar": "--ok-soft",
+        "tonalRamp": [
+          "oklch(15% 0.016 160.6)",
+          "oklch(26% 0.016 160.6)",
+          "oklch(37% 0.016 160.6)",
+          "oklch(48% 0.016 160.6)",
+          "oklch(60% 0.016 160.6)",
+          "oklch(72% 0.016 160.6)",
+          "oklch(84% 0.016 160.6)",
+          "oklch(95% 0.016 160.6)"
+        ]
+      },
+      "warn-soft": {
+        "role": "state",
+        "displayName": "Âmbar de Atenção Suave",
+        "canonical": "#f6ecd9",
+        "cssVar": "--warn-soft",
+        "tonalRamp": [
+          "oklch(15% 0.027 83.5)",
+          "oklch(26% 0.027 83.5)",
+          "oklch(37% 0.027 83.5)",
+          "oklch(48% 0.027 83.5)",
+          "oklch(60% 0.027 83.5)",
+          "oklch(72% 0.027 83.5)",
+          "oklch(84% 0.027 83.5)",
+          "oklch(95% 0.027 83.5)"
+        ]
+      },
+      "warn-text": {
+        "role": "state",
+        "displayName": "Âmbar de Atenção",
+        "canonical": "#7a5410",
+        "cssVar": "--warn-text",
+        "tonalRamp": [
+          "oklch(15% 0.093 76.0)",
+          "oklch(26% 0.093 76.0)",
+          "oklch(37% 0.093 76.0)",
+          "oklch(48% 0.093 76.0)",
+          "oklch(60% 0.093 76.0)",
+          "oklch(72% 0.093 76.0)",
+          "oklch(84% 0.040 76.0)",
+          "oklch(95% 0.040 76.0)"
+        ]
+      },
+      "danger-soft": {
+        "role": "state",
+        "displayName": "Vermelho de Erro Suave",
+        "canonical": "#f6e1dc",
+        "cssVar": "--danger-soft",
+        "tonalRamp": [
+          "oklch(15% 0.024 33.5)",
+          "oklch(26% 0.024 33.5)",
+          "oklch(37% 0.024 33.5)",
+          "oklch(48% 0.024 33.5)",
+          "oklch(60% 0.024 33.5)",
+          "oklch(72% 0.024 33.5)",
+          "oklch(84% 0.024 33.5)",
+          "oklch(95% 0.024 33.5)"
+        ]
+      },
+      "danger-text": {
+        "role": "state",
+        "displayName": "Vermelho de Erro",
+        "canonical": "#9b2f1d",
+        "cssVar": "--danger-text",
+        "tonalRamp": [
+          "oklch(15% 0.147 32.0)",
+          "oklch(26% 0.147 32.0)",
+          "oklch(37% 0.147 32.0)",
+          "oklch(48% 0.147 32.0)",
+          "oklch(60% 0.147 32.0)",
+          "oklch(72% 0.147 32.0)",
+          "oklch(84% 0.040 32.0)",
+          "oklch(95% 0.040 32.0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Só a saudação do estado vazio."
+      },
+      "data-display": {
+        "displayName": "Data Display",
+        "purpose": "Código da reserva no cartão."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Marca na barra, título dos Bastidores, títulos de aviso."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Subtítulo da saudação e texto do campo no estado vazio."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Conversa: resposta do assistente e balão do cliente."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Botões, chips e status."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Rótulos de fatos, metadados, aviso legal."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Ids de trace e chunk, nomes e argumentos de tools."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-composer",
+        "value": "0 1px 2px rgb(31 30 28 / 0.04), 0 10px 30px -14px rgb(31 30 28 / 0.18)",
+        "purpose": "Campo de mensagem nas duas formas."
+      },
+      {
+        "name": "composer-focus-halo",
+        "value": "0 0 0 4px rgb(194 70 28 / 0.08)",
+        "purpose": "Somado à sombra do campo quando ele tem foco."
+      },
+      {
+        "name": "shadow-card",
+        "value": "0 1px 2px rgb(31 30 28 / 0.04), 0 4px 14px -8px rgb(31 30 28 / 0.12)",
+        "purpose": "Cartão de reserva."
+      },
+      {
+        "name": "shadow-panel",
+        "value": "-12px 0 32px -24px rgb(31 30 28 / 0.35)",
+        "purpose": "Borda esquerda do painel Bastidores."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-saida",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Curva padrão de toda transição e entrada."
+      },
+      {
+        "name": "duration-hover",
+        "value": "160ms",
+        "purpose": "Hover de botões e chips, escala ativa do enviar."
+      },
+      {
+        "name": "duration-focus",
+        "value": "180ms",
+        "purpose": "Borda e sombra do campo ao ganhar foco."
+      },
+      {
+        "name": "panel-enter",
+        "value": "240ms, translateX(16px) e fade",
+        "purpose": "Entrada do painel Bastidores."
+      },
+      {
+        "name": "message-surge",
+        "value": "320ms, translateY(6px) e fade",
+        "purpose": "Entrada da resposta do assistente."
+      },
+      {
+        "name": "thinking-dots",
+        "value": "1.2s ease-in-out infinito, defasagem de 0.15s",
+        "purpose": "Três pontos de brasa do estado pensando."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "440px"
+      },
+      {
+        "name": "sm",
+        "value": "520px"
+      },
+      {
+        "name": "md",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "720px"
+      },
+      {
+        "name": "panel-side",
+        "value": "1100px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão enviar",
+      "kind": "button",
+      "refersTo": "button-send",
+      "description": "Único botão em brasa sólida; envia a mensagem.",
+      "html": "<button class=\"ds-send\" aria-label=\"Enviar\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg></button>",
+      "css": ".ds-send { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 999px; background: var(--accent, #c2461c); color: #fff; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), transform 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-send:hover { background: var(--accent-hover, #a63a15); } .ds-send:active { transform: scale(0.94); } .ds-send:focus-visible { outline: 2px solid var(--accent, #c2461c); outline-offset: 2px; } .ds-send:disabled { background: var(--surface-3, #ebe7df); color: var(--text-3, #736f68); cursor: not-allowed; }"
+    },
+    {
+      "name": "Botão fantasma",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Ações da barra, fechar painel e ver bastidores.",
+      "html": "<button class=\"ds-ghost\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M15 3v18\"/></svg><span>Bastidores</span></button>",
+      "css": ".ds-ghost { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.7rem; border: 0; border-radius: 8px; background: transparent; color: var(--text-2, #55524c); font: 520 0.88rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-ghost:hover { background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); } .ds-ghost:focus-visible { outline: 2px solid var(--accent, #c2461c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão contornado",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Copiar código da reserva e ação de tentar de novo nos avisos.",
+      "html": "<button class=\"ds-outline\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg>Copiar</button>",
+      "css": ".ds-outline { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.7rem; border: 1px solid var(--border, #e5e1d9); border-radius: 8px; background: var(--surface, #fff); color: var(--text-2, #55524c); font: 540 0.84rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-outline:hover { background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); } .ds-outline:focus-visible { outline: 2px solid var(--accent, #c2461c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Campo de mensagem",
+      "kind": "input",
+      "refersTo": "composer-hero",
+      "description": "A estrela da tela: campo grande do estado vazio com status e enviar.",
+      "html": "<div class=\"ds-composer\"><textarea class=\"ds-composer-input\" placeholder=\"Pergunte sobre o cardápio ou peça uma reserva\"></textarea><div class=\"ds-composer-bar\"><p class=\"ds-composer-status\">Enter envia, Shift+Enter quebra linha</p><button class=\"ds-composer-send\" aria-label=\"Enviar\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg></button></div></div>",
+      "css": ".ds-composer { display: flex; flex-direction: column; width: 100%; max-width: 46rem; background: var(--surface, #fff); border: 1px solid var(--border, #e5e1d9); border-radius: 22px; box-shadow: 0 1px 2px rgb(31 30 28 / 0.04), 0 10px 30px -14px rgb(31 30 28 / 0.18); transition: border-color 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-composer:focus-within { border-color: var(--border-strong, #d3cdc2); box-shadow: 0 0 0 4px rgb(194 70 28 / 0.08), 0 1px 2px rgb(31 30 28 / 0.04), 0 10px 30px -14px rgb(31 30 28 / 0.18); } .ds-composer-input { min-height: 6.5rem; padding: 1.15rem 1.25rem 0.35rem; border: 0; background: transparent; resize: none; font: 400 1.125rem/1.5 'Inter Tight', system-ui, sans-serif; color: var(--text, #1f1e1c); caret-color: var(--accent, #c2461c); } .ds-composer-input:focus { outline: none; } .ds-composer-input::placeholder { color: var(--text-3, #736f68); } .ds-composer-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0.7rem 0.7rem 1.25rem; } .ds-composer-status { margin: 0; font-size: 0.8rem; color: var(--text-3, #736f68); } .ds-composer-send { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 999px; background: var(--accent, #c2461c); color: #fff; cursor: pointer; } .ds-composer-send:hover { background: var(--accent-hover, #a63a15); }"
+    },
+    {
+      "name": "Barra do topo",
+      "kind": "nav",
+      "refersTo": "button-ghost",
+      "description": "Marca pequena em brasa, nome, selo demo e ações fantasma.",
+      "html": "<header class=\"ds-bar\"><div class=\"ds-brand\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 32 32\" fill=\"none\" style=\"color:#c2461c\"><path d=\"M16 3.5c-.9 2.6-3.9 4.4-3.9 7.9a3.9 3.9 0 0 0 7.8 0c0-1.6-.8-2.8-1.7-3.9-.2 1.3-.9 2.1-1.8 2.4.6-2.1.4-4.4-.4-6.4Z\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linejoin=\"round\"/><path d=\"M4 19.5h24M4 24h24M4 28.5h24M8 17.5v12.5M24 17.5v12.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\"/></svg><span class=\"ds-brand-name\">Mesa Certa</span><span class=\"ds-badge\">demo</span></div><button class=\"ds-bar-btn\">Nova conversa</button></header>",
+      "css": ".ds-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; padding: 0.5rem 1rem; font-family: 'Inter Tight', system-ui, sans-serif; } .ds-brand { display: flex; align-items: center; gap: 0.55rem; } .ds-brand-name { font-size: 1rem; font-weight: 620; letter-spacing: -0.01em; color: var(--text, #1f1e1c); } .ds-badge { padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--surface-2, #f2efe9); color: var(--text-2, #55524c); font-size: 0.75rem; font-weight: 520; } .ds-bar-btn { padding: 0.45rem 0.7rem; border: 0; border-radius: 8px; background: transparent; color: var(--text-2, #55524c); font: 520 0.88rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; } .ds-bar-btn:hover { background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); } .ds-bar-btn:focus-visible { outline: 2px solid var(--accent, #c2461c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip de sugestão",
+      "kind": "chip",
+      "refersTo": "chip-suggestion",
+      "description": "Sugestões logo abaixo do campo no estado vazio.",
+      "html": "<button class=\"ds-chip\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M16 2v4M8 2v4M3 10h18\"/></svg>Reservar uma mesa</button>",
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.45rem; white-space: nowrap; padding: 0.45rem 0.8rem; border: 1px solid var(--border, #e5e1d9); border-radius: 999px; background: var(--surface, #fff); color: var(--text-2, #55524c); font: 500 0.9rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), border-color 160ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip:hover { border-color: var(--border-strong, #d3cdc2); background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); } .ds-chip:focus-visible { outline: 2px solid var(--accent, #c2461c); outline-offset: 2px; }"
+    },
+    {
+      "name": "Chip de fonte",
+      "kind": "chip",
+      "refersTo": "chip-source",
+      "description": "Documento e seção citados sob a resposta do assistente.",
+      "html": "<span class=\"ds-source\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/></svg><span class=\"ds-source-doc\">Cardápio</span><span class=\"ds-source-sec\">Pratos principais</span></span>",
+      "css": ".ds-source { display: inline-flex; align-items: center; gap: 0.4rem; max-width: 100%; padding: 0.3rem 0.65rem; border: 1px solid var(--border, #e5e1d9); border-radius: 8px; background: var(--surface, #fff); color: var(--text-2, #55524c); font: 400 0.82rem/1.35 'Inter Tight', system-ui, sans-serif; } .ds-source svg { flex: none; color: var(--text-3, #736f68); } .ds-source-doc { font-weight: 580; color: var(--text, #1f1e1c); white-space: nowrap; } .ds-source-sec { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }"
+    },
+    {
+      "name": "Balão do cliente",
+      "kind": "custom",
+      "refersTo": "bubble-user",
+      "description": "Mensagem do cliente, alinhada à direita; o assistente não tem balão.",
+      "html": "<div class=\"ds-user\"><p class=\"ds-bubble\">Tem opção sem glúten no menu?</p></div>",
+      "css": ".ds-user { display: flex; justify-content: flex-end; } .ds-bubble { max-width: min(85%, 36rem); margin: 0; padding: 0.7rem 1.05rem; border-radius: 22px; background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); font: 400 1rem/1.55 'Inter Tight', system-ui, sans-serif; white-space: pre-wrap; }"
+    },
+    {
+      "name": "Cartão de reserva",
+      "kind": "card",
+      "refersTo": "card-reservation",
+      "description": "Reserva criada como cartão com código em mono, fatos e condições no rodapé.",
+      "html": "<article class=\"ds-res\"><header class=\"ds-res-head\"><span class=\"ds-res-status\">Reserva confirmada</span><span class=\"ds-res-origin\">criada agora</span></header><div class=\"ds-res-code-row\"><div><span class=\"ds-res-label\">Código</span><p class=\"ds-res-code\">MC-4821</p></div><button class=\"ds-res-copy\">Copiar</button></div><dl class=\"ds-res-facts\"><div><dt>Data</dt><dd>sex, 18 set</dd></div><div><dt>Horário</dt><dd>20:30</dd></div><div><dt>Pessoas</dt><dd>4</dd></div><div><dt>Área</dt><dd>Salão</dd></div></dl><p class=\"ds-res-foot\">Tolerância de 15 minutos. Cancelamento sem custo até 18h.</p></article>",
+      "css": ".ds-res { max-width: 34rem; border: 1px solid var(--border, #e5e1d9); border-radius: 14px; background: var(--surface, #fff); box-shadow: 0 1px 2px rgb(31 30 28 / 0.04), 0 4px 14px -8px rgb(31 30 28 / 0.12); overflow: hidden; font-family: 'Inter Tight', system-ui, sans-serif; color: var(--text, #1f1e1c); } .ds-res-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.65rem 1rem; background: var(--ok-soft, #e3efe8); border-bottom: 1px solid rgb(47 107 79 / 0.16); } .ds-res-status { font-size: 0.9rem; font-weight: 600; color: var(--ok, #2f6b4f); } .ds-res-origin, .ds-res-label, .ds-res-facts dt { font-size: 0.76rem; color: var(--text-3, #736f68); } .ds-res-code-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem 0.2rem; } .ds-res-code { margin: 0.1rem 0 0; font: 600 1.85rem/1.1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.08em; } .ds-res-copy { padding: 0.4rem 0.7rem; border: 1px solid var(--border, #e5e1d9); border-radius: 8px; background: var(--surface, #fff); color: var(--text-2, #55524c); font: 540 0.84rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; } .ds-res-copy:hover { background: var(--surface-2, #f2efe9); color: var(--text, #1f1e1c); } .ds-res-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem 1rem; margin: 0; padding: 0.85rem 1rem 1rem; } .ds-res-facts dd { margin: 0.1rem 0 0; font-size: 0.98rem; font-weight: 560; } .ds-res-foot { margin: 0; padding: 0.65rem 1rem; border-top: 1px solid var(--border, #e5e1d9); background: var(--bg, #faf9f6); font-size: 0.84rem; color: var(--text-2, #55524c); }"
+    },
+    {
+      "name": "Aviso de atenção",
+      "kind": "card",
+      "refersTo": "notice-atencao",
+      "description": "Falhas e limites comunicados na conversa, com fundo suave da família do estado.",
+      "html": "<div class=\"ds-notice\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4M12 17h.01\"/></svg><div><p class=\"ds-notice-title\">Muitas mensagens seguidas</p><p class=\"ds-notice-body\">Espere alguns segundos e tente de novo.</p><button class=\"ds-notice-action\">Tentar de novo</button></div></div>",
+      "css": ".ds-notice { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.75rem; padding: 0.9rem 1rem 1rem; border: 1px solid rgb(122 84 16 / 0.18); border-radius: 14px; background: var(--warn-soft, #f6ecd9); font-family: 'Inter Tight', system-ui, sans-serif; } .ds-notice > svg { margin-top: 0.1rem; color: var(--warn-text, #7a5410); } .ds-notice-title { margin: 0; font-weight: 600; color: var(--text, #1f1e1c); } .ds-notice-body { margin: 0.2rem 0 0; font-size: 0.95rem; color: var(--text-2, #55524c); } .ds-notice-action { margin-top: 0.75rem; padding: 0.45rem 0.85rem; border: 1px solid var(--border-strong, #d3cdc2); border-radius: 8px; background: var(--surface, #fff); font: 560 0.88rem 'Inter Tight', system-ui, sans-serif; cursor: pointer; } .ds-notice-action:hover { background: var(--surface-2, #f2efe9); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A conversa em papel quente",
+    "overview": "O chat é a página. A interface segue o padrão que ChatGPT e Claude consagraram: coluna central única, marca pequena no topo, o campo de mensagem como o objeto mais importante da tela e a resposta do assistente em texto corrido, sem balão. O calor vem do fundo quase branco puxado para o creme e de uma única brasa que acende onde algo acontece: enviar, foco, o assistente pensando, a relevância de uma fonte.\n\nA densidade é de leitura, não de painel. Tudo o que é dado técnico (código de reserva, ids de trace e de chunk, argumentos de tools) mora em JetBrains Mono e fica recolhido nos Bastidores, um painel lateral que só abre quando pedido. Superfícies são brancas sobre o fundo quente, separadas por bordas finas de 1px; sombra só existe em dois objetos que precisam flutuar (o campo de mensagem e o cartão de reserva) e no painel lateral.\n\nA direção recusa site de restaurante (sem fotos, sem hero editorial, sem cardápio diagramado como identidade) e recusa painel técnico (sem grades de métricas na primeira vista). A primeira direção autoral, \"Grelha de brasa\", foi descartada pelo usuário por tirar o foco do chat; o que sobrevive dela é só a marca de chama sobre grelha, em traço.",
+    "keyCharacteristics": [
+      "Coluna central de 48rem; conversa rola atrás de degradês no topo e sob o campo ancorado.",
+      "Um acento só (brasa), usado em pontos pequenos; nunca como área grande.",
+      "Assistente sem balão, cliente em balão discreto de superfície tonal.",
+      "Inter Tight para toda a interface; JetBrains Mono restrito a dado real.",
+      "Bordas finas e superfícies brancas no lugar de sombras; três sombras nomeadas e só três.",
+      "Movimento curto de saída (ease out forte), com redução total em `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Brasa Pequena Rule",
+        "body": "O acento sólido só aparece em objetos pequenos (botão de enviar de 2.25rem a 2.5rem, pontos de 6px, trilho de 5px, marca de 28px, anel de foco de 2px). Área grande em brasa sólida não existe neste sistema; quando o acento precisa de área, usa accent-soft.",
+        "section": "colors"
+      },
+      {
+        "name": "The Estado Suave Rule",
+        "body": "Estados (ok, atenção, erro) se expressam como fundo suave com texto escuro da mesma família, e a borda do contêiner, quando tingida, usa a cor de texto a 16% ou 18% de opacidade. Nunca fundo saturado com texto branco.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono É Dado Rule",
+        "body": "JetBrains Mono só aparece em valor que o sistema produziu: código de reserva, ids, nomes e argumentos de tools, trace. Rótulos, títulos e prosa ficam sempre em Inter Tight, mesmo dentro dos Bastidores.",
+        "section": "typography"
+      },
+      {
+        "name": "The Números Tabulares Rule",
+        "body": "Todo número que muda ou se compara (segundos pensando, milissegundos, scores, estatísticas, metadados) usa `font-variant-numeric: tabular-nums`.",
+        "section": "typography"
+      },
+      {
+        "name": "The Só Flutua Quem Age Rule",
+        "body": "Sombra é reservada ao campo de mensagem, ao cartão de reserva e ao painel lateral. Chips, avisos, balões e botões ficam planos, separados por borda ou por tom.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Degradê No Lugar do Corte Rule",
+        "body": "Onde conteúdo rolável encontra uma borda (topo da conversa, base sob o campo, limite de altura do campo), ele some num degradê em vez de ser cortado seco.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** manter o campo de mensagem como o maior e mais elevado objeto da tela, com raio de 22px e a sombra de campo.",
+      "**Do** usar brasa sólida só em objetos pequenos (enviar, foco, pontos, trilho, marca) e accent-soft quando o acento precisar de área.",
+      "**Do** colocar todo dado gerado pelo sistema em JetBrains Mono e todo o resto em Inter Tight.",
+      "**Do** separar superfícies com borda de 1px em border antes de pensar em sombra.",
+      "**Do** expressar estados como fundo suave com texto escuro da mesma família.",
+      "**Do** fazer conteúdo rolável sumir em degradê nas bordas.",
+      "**Do** usar `--ease-saida` com durações entre 160ms e 320ms, e respeitar `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "**Don't** colocar a resposta do assistente dentro de balão; o balão é só do cliente.",
+      "**Don't** pintar áreas grandes (cabeçalhos, faixas, cartões) em brasa sólida.",
+      "**Don't** usar JetBrains Mono em rótulos, títulos ou prosa.",
+      "**Don't** criar sombras novas além das três nomeadas, nem sombras duras deslocadas.",
+      "**Don't** usar fotos de salão, pratos ou equipe; o restaurante é fictício e nenhuma existe.",
+      "**Don't** usar sobretítulos (eyebrows) em caixa alta sobre títulos ou seções.",
+      "**Don't** transformar a primeira vista em site de restaurante ou em painel de métricas; os Bastidores ficam recolhidos até serem pedidos."
+    ]
+  }
+}

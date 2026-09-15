@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { ApiError, getTrace, type Trace } from "@/lib/api";
-import { formatSeconds } from "@/lib/format";
+import { formatSeconds, splitChunkId } from "@/lib/format";
 
 import styles from "./Backstage.module.css";
 
@@ -114,7 +114,10 @@ function TraceView({ trace }: { trace: Trace }) {
                 <ul className={styles.list}>
                   {retrieval.chunk_ids.map((chunk, i) => (
                     <li key={chunk} className={styles.chunk}>
-                      <span className={styles.chunkId}>{chunk}</span>
+                      <span className={styles.chunkId} title={chunk}>
+                        <span className={styles.chunkSource}>{splitChunkId(chunk).source}</span>
+                        <span className={styles.chunkPath}>{splitChunkId(chunk).path}</span>
+                      </span>
                       <span className={styles.scoreTrack} aria-hidden="true">
                         <span className={styles.scoreFill} style={{ width: `${Math.round((retrieval.scores[i] ?? 0) * 100)}%` }} />
                       </span>

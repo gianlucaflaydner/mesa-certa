@@ -8,11 +8,13 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 |---|---|
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
-| Dataset de avaliação | `evals/dataset.yaml`, 41 casos (8 adversariais), validado contra os cabeçalhos reais |
+| Dataset de avaliação | `evals/dataset.yaml`, 43 casos (8 adversariais, 2 do cardápio em PDF), validado contra os cabeçalhos reais |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
 | F4 | concluída: loop, sessão, trace e persona; cenário da US-08 validado com a API real |
 | F4.1 | código e testes sem rede concluídos (SDD §8.5); falta rodar os casos adv-004 a adv-008 no `make chat` com a API real |
-| F5 | concluída: API e front-end Next.js (formato ChatGPT/Claude) validados pela UI com a API real; pendentes menores: revisão final de design com `DESIGN.md`, teste e2e e remover a dependência do Streamlit |
+| F5 | concluída: API e front-end Next.js (formato ChatGPT/Claude) validados pela UI com a API real; revisão final de design fechada com `DESIGN.md`; `tests/e2e/test_chat.py` passando; Streamlit removido |
+| F6 | suite de avaliação em `evals/` (busca, varredura do limiar e agente); limiar fixado em 0,85 (D5); última rodada (`evals/results/2026-09-15-1642-agente.md`, 43 casos, 3 repetições): 97,7% dos casos aprovados, roteamento e recusa em 100%, zero termos proibidos, p95 7,5 s. Único alvo abaixo: citação 93,8%, só por rag-007 (score 0,827, abaixo do limiar 0,85; custo conhecido do D5) |
+| Cardápio em PDF | tool `enviar_cardapio` (SDD §7.8), rota `GET /arquivos/cardapio.pdf` e cartão com Abrir e Baixar no front; o PDF de `docs/` precisa entrar na imagem da F7 |
 
 ## Regras gerais
 
@@ -31,7 +33,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | D3 | Reescrever travessões de PRD e SDD | qualquer momento | fazer antes da F7, junto com o README |
 | D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | **confirmado na F4: `claude-sonnet-5`**. Ele não aceita `temperature` (o SDK 1.x nem expõe o parâmetro), então `MODEL_TEMPERATURE` saiu e entrou `MODEL_EFFORT` (padrão `medium`, a calibrar na F6); `MODEL_MAX_TOKENS` foi para 16.000 por causa do thinking adaptativo |
 | D6 | Limites de tamanho da P3 e da P4 (2.000 caracteres na mensagem, 120 no nome, 500 nas observações) | F4.1 | manter os valores do SDD §8.5 e revisar se algum caso real do dataset for cortado |
-| D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite. Na F2, com e5, perguntas fora da base pontuaram cerca de 0,83 e a melhor resposta certa cerca de 0,90: o 0,72 atual não recusa nada, e a varredura precisa cobrir a faixa acima de 0,85 |
+| D5 | Valor final do limiar de similaridade | F6 | **decidido na F6: 0,85.** Varredura de 0,60 a 0,95: em 0,72 o falso positivo era 100%; o platô 0,84 a 0,85 dá recall 88,2% e falso positivo 0%. Margem estreita (negativo mais alto 0,837, amostra de 5); rever quando o dataset ganhar mais negativos |
 
 ---
 
@@ -301,6 +303,8 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 
 | Arquivo | Conteúdo |
 |---|---|
+| `evals/cases.py` | leitura tipada do dataset; negativos de busca = `fora_da_base` mais adv-002 e adv-008 |
+| `evals/retrieval.py` | ranking bruto por pergunta, hit@k, MRR, latência e varredura do limiar de 0,60 a 0,95 |
 | `evals/metrics.py` | hit@1/3/5, MRR, latência p95, roteamento com `tools_alternativas`, citação, recusa, termos |
 | `evals/runner.py` | por caso: re-seed, clock em `contexto_data`, executa turno com `build_app` e o trace; suite repetida para medir a variação do modelo (não há `temperature`) |
 | `evals/report.py` | Markdown em `evals/results/AAAA-MM-DD-HHMM.md`, com comparação à execução anterior e casos que falharam |
@@ -323,7 +327,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 **Objetivo.** Qualquer pessoa sobe o projeto com um comando e entende a arquitetura em 3 minutos.
 
 **Entregas**
-- `Dockerfile` multi-stage com o modelo de embedding baixado no build.
+- `Dockerfile` multi-stage com o modelo de embedding baixado no build e o `docs/Cardápio Mesa Certa.pdf` copiado (ou `MENU_PDF_PATH` apontando para ele).
 - `docker-compose.yml` com API e UI; entrypoint roda migração, seed e ingestão se necessário.
 - `docs/adr/001` a `006`, extraídos do SDD §3.
 - `README.md` final: diagrama, como rodar, tabela de métricas do último relatório, curva do limiar, GIF do cenário composto.

@@ -97,6 +97,28 @@ const cancelamento: ChatResponse = {
   },
 };
 
+const cardapio: ChatResponse = {
+  session_id: "sessao-sintetica",
+  trace_id: "01K5SINTETICO0000000000006",
+  reply: "Claro! Aqui está o cardápio completo da casa, com todos os pratos e preços. É só abrir ou baixar logo abaixo.",
+  citations: [],
+  tool_calls: [{ name: "enviar_cardapio", ok: true, duration_ms: 3, error_code: null }],
+  latency_ms: 2240,
+  iterations: 2,
+  exhausted: false,
+  guard_violations: [],
+  reservation: null,
+  attachments: [
+    {
+      tipo: "cardapio_pdf",
+      titulo: "Cardápio Mesa Certa",
+      arquivo: "cardapio-mesa-certa.pdf",
+      url: "/arquivos/cardapio.pdf",
+      tamanho_kb: 1834,
+    },
+  ],
+};
+
 const conversa: Entry[] = [
   { id: "c1", kind: "cliente", text: "Quero reservar sábado às 20h para 6 pessoas, uma tem intolerância a glúten." },
   { id: "c2", kind: "casa", response: pedidoGluten },
@@ -166,6 +188,12 @@ export const PREVIEWS: Record<string, PreviewState> = {
         traceId: "01K5SINTETICO0000000000003",
         text: "Tem mesa pra 2 hoje às 21h?",
       },
+    ],
+  },
+  cardapio: {
+    entries: [
+      { id: "m1", kind: "cliente", text: "Pode me mandar o cardápio?" },
+      { id: "m2", kind: "casa", response: cardapio },
     ],
   },
   bastidores: { entries: conversa.slice(0, 2), debugOpen: true, trace },

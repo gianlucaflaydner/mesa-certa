@@ -371,13 +371,17 @@ def test_codigo_de_erro(registry: ToolRegistry, name: str, args: dict[str, Any],
     assert json.loads(result.to_json())["error"]["code"] == code
 
 
+# Produzidos por dispatch em outro arquivo, que precisa de um registry com o PDF ausente.
+COVERED_ELSEWHERE = {"CARDAPIO_INDISPONIVEL"}  # tests/integration/test_menu_pdf.py
+
+
 def test_cenarios_cobrem_todos_os_codigos_de_dominio() -> None:
     def codes(cls: type[DomainError]) -> set[str]:
         own = {cls.CODE} if hasattr(cls, "CODE") else set()
         return own.union(*(codes(sub) for sub in cls.__subclasses__()))
 
-    assert codes(DomainError) <= {code for _, _, code in ERROR_SCENARIOS}
-    assert len(codes(DomainError)) == 10
+    assert codes(DomainError) <= {code for _, _, code in ERROR_SCENARIOS} | COVERED_ELSEWHERE
+    assert len(codes(DomainError)) == 11
 
 
 # Robustez do registry

@@ -41,8 +41,11 @@ class Settings(BaseSettings):
     chroma_path: Path = Path("./data/chroma")
     chroma_collection: str = "mesa_certa_kb"
     knowledge_path: Path = Path("./data/knowledge")
+    # Cardápio completo entregue pela tool enviar_cardapio e servido em /arquivos/cardapio.pdf.
+    menu_pdf_path: Path = Path("./docs/Cardápio Mesa Certa.pdf")
     rag_top_k: int = Field(default=4, gt=0)
-    rag_similarity_threshold: float = Field(default=0.72, ge=0.0, le=1.0)
+    # Calibrado pela varredura da F6 (evals/results/*-recuperacao.md, decisão D5).
+    rag_similarity_threshold: float = Field(default=0.85, ge=0.0, le=1.0)
     rag_max_context_chars: int = Field(default=4000, gt=0)
 
     # Banco

@@ -18,6 +18,7 @@ TOOLS = {
     "consultar_reserva",
     "cancelar_reserva",
     "listar_pratos_do_dia",
+    "enviar_cardapio",
 }
 REQUIRED_FIELDS = {
     "id",
@@ -38,6 +39,7 @@ DISTRIBUTION = {
     "disponibilidade": 5,
     "reserva": 6,
     "pratos_do_dia": 2,
+    "documentos": 2,
     "composto": 3,
     "fora_da_base": 3,
     "adversarial": 8,
@@ -48,6 +50,7 @@ ID_PREFIX = {
     "disponibilidade": "tool-",
     "reserva": "tool-",
     "pratos_do_dia": "tool-",
+    "documentos": "doc-",
     "composto": "comp-",
     "fora_da_base": "neg-",
     "adversarial": "adv-",
@@ -81,7 +84,7 @@ def test_campos_obrigatorios_e_ids(cases: list[dict[str, Any]]) -> None:
 
 
 def test_distribuicao(cases: list[dict[str, Any]]) -> None:
-    assert len(cases) == 41
+    assert len(cases) == 43
     assert Counter(c["categoria"] for c in cases) == DISTRIBUTION
 
 

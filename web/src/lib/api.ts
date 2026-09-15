@@ -24,6 +24,15 @@ export type Reservation = {
   aviso?: string | null;
 };
 
+export type Attachment = {
+  tipo: string;
+  titulo: string;
+  arquivo: string;
+  /** Relativa ao endereço da API, ex.: /arquivos/cardapio.pdf */
+  url: string;
+  tamanho_kb: number;
+};
+
 export type ChatResponse = {
   session_id: string;
   trace_id: string;
@@ -35,6 +44,8 @@ export type ChatResponse = {
   exhausted: boolean;
   guard_violations: string[];
   reservation: Reservation | null;
+  /** Ausente em respostas antigas guardadas na aba; trate como lista vazia. */
+  attachments?: Attachment[];
 };
 
 export type TraceToolCall = {
