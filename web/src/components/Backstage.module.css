@@ -1,0 +1,230 @@
+.panel {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  width: min(27rem, 100vw);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -12px 0 32px -24px rgb(31 30 28 / 0.35);
+  animation: entra 240ms var(--ease-saida) both;
+}
+
+@keyframes entra {
+  from {
+    transform: translateX(16px);
+    opacity: 0;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 620;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.65rem;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.86rem;
+  font-weight: 520;
+}
+
+.close:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1.25rem 2rem;
+}
+
+.traceId {
+  margin: 0.5rem 0 0.25rem;
+  font-family: var(--font-dados);
+  font-size: 0.74rem;
+  color: var(--text-3);
+}
+
+.section {
+  padding: 1rem 0 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+.heading {
+  margin: 0 0 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-2);
+}
+
+.list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tool {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.toolHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+}
+
+.toolName {
+  font-family: var(--font-dados);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.ok {
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.fail {
+  margin: 0;
+  color: var(--danger-text);
+  font-weight: 600;
+  font-size: 0.86rem;
+}
+
+.ms {
+  margin-left: auto;
+  color: var(--text-3);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.args {
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  font-family: var(--font-dados);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.retrieval + .retrieval {
+  margin-top: 0.9rem;
+}
+
+.query {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.chunk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4rem 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.chunkId {
+  font-family: var(--font-dados);
+  font-size: 0.72rem;
+  color: var(--text-2);
+  overflow-wrap: anywhere;
+}
+
+.scoreTrack {
+  height: 5px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.scoreFill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.score {
+  font-size: 0.8rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem 1rem;
+  margin: 0;
+}
+
+.stats dt {
+  font-size: 0.74rem;
+  color: var(--text-3);
+}
+
+.stats dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.98rem;
+  font-weight: 580;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .panel {
+    inset: 0;
+    width: auto;
+    border-left: 0;
+  }
+
+  .chunk {
+    grid-template-columns: minmax(0, 1fr) 2.5rem;
+  }
+
+  .scoreTrack {
+    display: none;
+  }
+}

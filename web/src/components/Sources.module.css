@@ -1,0 +1,58 @@
+.sources {
+  margin-top: 1rem;
+}
+
+.heading {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 560;
+  color: var(--text-3);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.chip svg {
+  flex: none;
+  color: var(--text-3);
+}
+
+.doc {
+  font-weight: 580;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.section {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .section {
+    white-space: normal;
+  }
+}

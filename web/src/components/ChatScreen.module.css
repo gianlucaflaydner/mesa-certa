@@ -1,0 +1,58 @@
+.screen {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.emptyMain {
+  grid-row: 2 / span 2;
+  overflow-y: auto;
+}
+
+.thread {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable both-edges;
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+  max-width: var(--coluna);
+  margin: 0 auto;
+  padding: 1.5rem var(--pad) 2rem;
+}
+
+/* O campo de mensagem ancorado: a conversa some por baixo dele num degradê. */
+.dock {
+  position: relative;
+  width: 100%;
+  max-width: var(--coluna);
+  margin: 0 auto;
+  padding: 0 var(--pad) calc(0.6rem + env(safe-area-inset-bottom));
+}
+
+.dock::before {
+  content: "";
+  position: absolute;
+  inset: -2rem 0 100%;
+  background: linear-gradient(to bottom, rgb(250 249 246 / 0), var(--bg));
+  pointer-events: none;
+}
+
+.disclaimer {
+  margin: 0.5rem 0 0;
+  font-size: 0.74rem;
+  color: var(--text-3);
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (min-width: 1100px) {
+  .withPanel {
+    padding-right: min(27rem, 100vw);
+  }
+}
