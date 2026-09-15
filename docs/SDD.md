@@ -277,6 +277,8 @@ mesa-certa/
 │   │   ├── loop.py          # AgentLoop — núcleo do tool calling
 │   │   ├── prompts.py       # system prompt e templates
 │   │   ├── session.py       # histórico por sessão
+│   │   ├── llm.py           # LLMClient, AnthropicLLM, ModelUnavailable
+│   │   ├── factory.py       # monta o agente a partir das Settings
 │   │   └── models.py        # TurnResult, Citation, ToolCallRecord
 │   │
 │   ├── tools/
@@ -968,7 +970,10 @@ class AgentLoop:
 - Todas as tools de uma mesma resposta são executadas antes de devolver o lote — o modelo pode pedir mais de uma por vez (exatamente o caso da US-08)
 - Erro de tool vira `tool_result` com `is_error: true`, não exceção — o modelo tem a chance de se corrigir
 - Estouro de iterações (`MAX_ITERATIONS`) produz mensagem de fallback ao usuário e registra `exhausted: true` no trace; é um sintoma de loop e precisa aparecer em métrica
-- `temperature` = 0,3 em produção, 0,0 na suite de avaliação (RNF-11)
+- ~~`temperature` = 0,3 em produção, 0,0 na suite de avaliação (RNF-11)~~ **Revisto na F4.** Os modelos atuais (incluindo `claude-sonnet-5`) rejeitam `temperature`, e o SDK 1.x nem expõe o parâmetro. A profundidade é regulada por `output_config.effort` (`MODEL_EFFORT`, padrão `medium`), e `max_tokens` sobe para 16.000 porque o thinking adaptativo consome do mesmo limite. O esboço acima é ilustrativo; a implementação está em `agent/loop.py` e `agent/llm.py`.
+- Resposta encerrada sem `stop_reason = tool_use` (por exemplo, truncada em `max_tokens`) é gravada na sessão sem blocos `tool_use`, para não deixar pedido de tool sem resultado no histórico.
+- `stop_reason = refusal` devolve uma resposta fixa ao cliente.
+- O system prompt vai em dois blocos: regras com `cache_control` e contexto temporal separado, para a data não invalidar o cache.
 
 ### 8.2 System prompt
 
@@ -1017,7 +1022,7 @@ Ao confirmar uma reserva, informe código, data, horário, número de pessoas
 e a tolerância de atraso de 20 minutos.
 ```
 
-> **Pendência da F4.** O esqueleto acima não informa os horários de funcionamento. Sem eles, o modelo não sabe que a casa fecha às segundas sem chamar uma tool, e a US-04 proíbe consultar disponibilidade nesse caso (caso `tool-003` do dataset). Decidir na F4 entre incluir os horários no prompt ou aceitar `buscar_conhecimento` como caminho, que é o que o dataset admite hoje.
+> **Decidido na F4 (D2).** O prompt inclui os horários de funcionamento e a instrução de não consultar disponibilidade em segunda-feira, atendendo a US-04 (caso `tool-003`). Fechamentos excepcionais continuam vindo só de `consultar_disponibilidade`. O texto final, sem travessões, está em `agent/prompts.py`.
 
 ### 8.3 Estrutura do resultado de turno
 
@@ -1147,6 +1152,8 @@ Persistência na v1: um arquivo JSONL por dia em `data/traces/YYYY-MM-DD.jsonl`,
 
 O mascaramento também roda sobre o texto livre da mensagem do usuário, via regex de telefone e e-mail.
 
+**Limite conhecido.** Nome só é mascarado em campo estruturado (`nome` nos argumentos e resultados de tool). Um nome solto no texto livre ("Sou a Bruna Alves") não é detectável por regex com confiança e aparece no trace. O telefone do restaurante, que é público, não é mascarado.
+
 ### 10.3 Métricas operacionais
 
 Contadores emitidos por turno, agregáveis a partir do JSONL:
@@ -1259,7 +1266,7 @@ make eval-threshold-sweep     # varre o limiar de 0,60 a 0,85
 
 `evals/report.py` grava `evals/results/YYYY-MM-DD-HHMM.md` com tabela de métricas, comparação com a execução anterior e lista de casos que falharam com a resposta obtida. O relatório mais recente é versionado e referenciado no README.
 
-Determinismo: `temperature = 0.0`, seed do seed do banco fixa, `contexto_data` de cada caso injetado no clock via fixture (RNF-11).
+Determinismo: seed do banco fixa e `contexto_data` de cada caso injetado no clock via fixture (RNF-11). Como os modelos atuais não aceitam `temperature`, a variação residual do modelo é medida na F6 repetindo a suite e reportando a dispersão das métricas de agente.
 
 ---
 
@@ -1271,8 +1278,8 @@ Determinismo: `temperature = 0.0`, seed do seed do banco fixa, `contexto_data` d
 # Modelo
 ANTHROPIC_API_KEY=
 MODEL_NAME=claude-sonnet-5
-MODEL_TEMPERATURE=0.3
-MODEL_MAX_TOKENS=2048
+MODEL_EFFORT=medium
+MODEL_MAX_TOKENS=16000
 
 # RAG
 EMBEDDING_MODEL=intfloat/multilingual-e5-small

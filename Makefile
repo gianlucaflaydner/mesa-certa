@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test cov ingest search seed eval run-api run-ui
+.PHONY: install lint format typecheck test cov ingest search seed chat eval run-api run-ui
 
 UV ?= uv
 
@@ -31,6 +31,10 @@ search:
 
 seed:
 	$(UV) run python scripts/reset_db.py
+
+# Ex.: make chat ARGS="--agora 2026-09-15T14:00:00-03:00 --debug"
+chat:
+	$(UV) run python scripts/chat.py $(ARGS)
 
 eval:
 	@echo "eval: entra na F6"

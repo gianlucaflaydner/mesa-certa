@@ -11,6 +11,7 @@ from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+Effort = Literal["low", "medium", "high", "xhigh", "max"]
 
 
 class Settings(BaseSettings):
@@ -25,8 +26,10 @@ class Settings(BaseSettings):
     # Modelo
     anthropic_api_key: SecretStr | None = None
     model_name: str = "claude-sonnet-5"
-    model_temperature: float = Field(default=0.3, ge=0.0, le=1.0)
-    model_max_tokens: int = Field(default=2048, gt=0)
+    # Os modelos atuais não aceitam temperature; a profundidade é regulada por effort.
+    model_effort: Effort = "medium"
+    # O thinking adaptativo consome do mesmo limite: valores baixos truncam a resposta.
+    model_max_tokens: int = Field(default=16000, gt=0)
 
     # RAG
     embedding_model: str = "intfloat/multilingual-e5-small"

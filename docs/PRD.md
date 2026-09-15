@@ -549,7 +549,7 @@ Funcionalidade: Trace de execução
 | RNF-08 | Portabilidade do índice vetorial | persistido em disco, versionável ou reconstruível por comando |
 | RNF-09 | Privacidade em logs | telefone e e-mail mascarados em todo registro estruturado |
 | RNF-10 | Idioma | todas as respostas em português do Brasil |
-| RNF-11 | Determinismo de avaliação | temperatura fixa e seed controlada na suite de eval |
+| RNF-11 | Determinismo de avaliação | seed do banco e relógio controlados na suite de eval; variação do modelo medida por repetição (os modelos atuais não aceitam temperatura) |
 | RNF-12 | Documentação | README com arquitetura, instruções de execução e resultados da avaliação |
 
 ---

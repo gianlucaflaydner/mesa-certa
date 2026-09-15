@@ -10,6 +10,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
+| F4 | código e testes sem rede concluídos; falta rodar `make chat` com chave real no cenário da US-08 |
 
 ## Regras gerais
 
@@ -24,9 +25,9 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | # | Decisão | Quando | Recomendação |
 |---|---|---|---|
 | D1 | Gerenciador de dependências: uv ou Poetry | início da F0 | **decidido na F0: uv** |
-| D2 | Horários de funcionamento no system prompt | F4 | incluir no prompt; hoje o caso `tool-003` aceita `buscar_conhecimento` como alternativa |
+| D2 | Horários de funcionamento no system prompt | F4 | **decidido na F4: incluídos no prompt**, com instrução de não consultar disponibilidade na segunda |
 | D3 | Reescrever travessões de PRD e SDD | qualquer momento | fazer antes da F7, junto com o README |
-| D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | `claude-sonnet-5` já no `.env.example` desde a F0; confirmar id na documentação da API na F4 |
+| D4 | Modelo Claude padrão em `MODEL_NAME` | F4 | **confirmado na F4: `claude-sonnet-5`**. Ele não aceita `temperature` (o SDK 1.x nem expõe o parâmetro), então `MODEL_TEMPERATURE` saiu e entrou `MODEL_EFFORT` (padrão `medium`, a calibrar na F6); `MODEL_MAX_TOKENS` foi para 16.000 por causa do thinking adaptativo |
 | D5 | Valor final do limiar de similaridade | F6 | definido pela varredura, não por palpite. Na F2, com e5, perguntas fora da base pontuaram cerca de 0,83 e a melhor resposta certa cerca de 0,90: o 0,72 atual não recusa nada, e a varredura precisa cobrir a faixa acima de 0,85 |
 
 ---
@@ -191,6 +192,8 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | `agent/prompts.py` | `build_system_prompt(now)` a partir do SDD §8.2, com a decisão D2 aplicada |
 | `agent/session.py` | `SessionStore` em memória, janela de 20 mensagens, TTL 60 min, poda que preserva pares `tool_use`/`tool_result` |
 | `agent/loop.py` | `AgentLoop.run_turn` do SDD §8.1, cliente LLM injetável |
+| `agent/llm.py` | `LLMClient` (protocolo), `AnthropicLLM` e `ModelUnavailable` |
+| `agent/factory.py` | `build_app`: monta banco, tools, tracer, sessões e agente; reusado pela F5 |
 | `observability/masking.py` | regras do SDD §10.2 e regex para texto livre |
 | `observability/tracing.py` | `Tracer`, `Trace`, spans; grava JSONL diário em `TRACE_PATH` |
 | `observability/logging.py` | structlog com processador de mascaramento |
@@ -248,7 +251,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Arquivo | Conteúdo |
 |---|---|
 | `evals/metrics.py` | hit@1/3/5, MRR, latência p95, roteamento com `tools_alternativas`, citação, recusa, termos |
-| `evals/runner.py` | por caso: re-seed, clock em `contexto_data`, `temperature = 0`, executa turno, coleta trace |
+| `evals/runner.py` | por caso: re-seed, clock em `contexto_data`, executa turno com `build_app` e o trace; suite repetida para medir a variação do modelo (não há `temperature`) |
 | `evals/report.py` | Markdown em `evals/results/AAAA-MM-DD-HHMM.md`, com comparação à execução anterior e casos que falharam |
 | `Makefile` | `eval`, `eval-retrieval`, `eval-threshold-sweep` |
 

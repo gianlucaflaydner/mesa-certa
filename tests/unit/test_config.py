@@ -18,8 +18,8 @@ def test_defaults_sem_env(ambiente_limpo: pytest.MonkeyPatch) -> None:
 
     assert s.anthropic_api_key is None
     assert s.model_name == "claude-sonnet-5"
-    assert s.model_temperature == 0.3
-    assert s.model_max_tokens == 2048
+    assert s.model_effort == "medium"
+    assert s.model_max_tokens == 16000
     assert s.embedding_model == "intfloat/multilingual-e5-small"
     assert s.chroma_path == Path("./data/chroma")
     assert s.chroma_collection == "mesa_certa_kb"
