@@ -43,10 +43,19 @@ def build_clock(settings: Settings, fixed_at: datetime | None = None) -> Clock:
     return FixedClock(fixed_at) if fixed_at else SystemClock(ZoneInfo(settings.timezone))
 
 
+WORKSPACE_HEADER = "anthropic-workspace-id"
+
+
 def build_llm(settings: Settings) -> AnthropicLLM:
     key = settings.anthropic_api_key
+    workspace = settings.anthropic_workspace_id
+    headers = {WORKSPACE_HEADER: workspace} if workspace else None
     # Sem chave nas Settings, o SDK resolve credenciais do ambiente ou do perfil do `ant`.
-    client = anthropic.Anthropic(api_key=key.get_secret_value()) if key else anthropic.Anthropic()
+    client = (
+        anthropic.Anthropic(api_key=key.get_secret_value(), default_headers=headers)
+        if key
+        else anthropic.Anthropic(default_headers=headers)
+    )
     return AnthropicLLM(
         client, settings.model_name, settings.model_max_tokens, settings.model_effort
     )

@@ -17,6 +17,7 @@ def test_defaults_sem_env(ambiente_limpo: pytest.MonkeyPatch) -> None:
     s = Settings(_env_file=None)
 
     assert s.anthropic_api_key is None
+    assert s.anthropic_workspace_id is None
     assert s.model_name == "claude-sonnet-5"
     assert s.model_effort == "medium"
     assert s.model_max_tokens == 16000

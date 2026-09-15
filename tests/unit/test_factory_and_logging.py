@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 
 from pydantic import SecretStr
 
-from mesa_certa.agent.factory import build_app, build_clock, build_llm
+from mesa_certa.agent.factory import WORKSPACE_HEADER, build_app, build_clock, build_llm
 from mesa_certa.config import Settings
 from mesa_certa.domain.date_resolver import FixedClock, SystemClock
 from mesa_certa.observability.logging import configure_logging, mask_event
@@ -29,6 +29,17 @@ def test_build_llm_usa_modelo_effort_e_limite_das_settings(settings: Settings) -
     assert llm.model == "claude-sonnet-5"
     assert llm.effort == "low"
     assert llm.max_tokens == 16000
+    assert WORKSPACE_HEADER not in llm._client.default_headers
+
+
+def test_build_llm_envia_workspace_quando_configurado(settings: Settings) -> None:
+    configurado = settings.model_copy(
+        update={"anthropic_api_key": SecretStr("sk-teste"), "anthropic_workspace_id": "wrkspc_123"}
+    )
+
+    llm = build_llm(configurado)
+
+    assert llm._client.default_headers[WORKSPACE_HEADER] == "wrkspc_123"
 
 
 def test_build_app_monta_agente_que_conclui_turno(settings: Settings) -> None:

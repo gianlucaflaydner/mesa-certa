@@ -10,7 +10,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 36 casos, validado contra os cabeçalhos reais |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
-| F4 | código e testes sem rede concluídos, persona no system prompt; falta rodar `make chat` com chave real no cenário da US-08 |
+| F4 | concluída: loop, sessão, trace e persona; cenário da US-08 validado com a API real |
 | F4.1 | especificada (proteção contra injeção de instruções, SDD §8.5); não iniciada |
 
 ## Regras gerais

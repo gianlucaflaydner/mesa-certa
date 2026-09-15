@@ -25,6 +25,8 @@ class Settings(BaseSettings):
 
     # Modelo
     anthropic_api_key: SecretStr | None = None
+    # Obrigatório quando a chave não pertence a um workspace (vai no header anthropic-workspace-id).
+    anthropic_workspace_id: str | None = None
     model_name: str = "claude-sonnet-5"
     # Os modelos atuais não aceitam temperature; a profundidade é regulada por effort.
     model_effort: Effort = "medium"

@@ -1316,6 +1316,7 @@ Determinismo: seed do banco fixa e `contexto_data` de cada caso injetado no cloc
 ```bash
 # Modelo
 ANTHROPIC_API_KEY=
+ANTHROPIC_WORKSPACE_ID=      # só para chaves sem workspace
 MODEL_NAME=claude-sonnet-5
 MODEL_EFFORT=medium
 MODEL_MAX_TOKENS=16000
