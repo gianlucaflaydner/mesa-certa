@@ -19,7 +19,7 @@
 
 Aplicação Python monolítica composta por cinco camadas:
 
-1. **Interface** — API HTTP (FastAPI) e UI de chat (Streamlit)
+1. **Interface** — API HTTP (FastAPI) e UI de chat (Next.js em `web/`, §9.4)
 2. **Agente** — loop de tool calling próprio sobre o SDK da Anthropic
 3. **Tools** — funções Python com schema declarado, registradas em um registry
 4. **Domínio** — serviços de disponibilidade, reserva e cardápio sobre SQLite
@@ -40,7 +40,7 @@ Não há serviço externo além da API do modelo. Banco e índice vetorial são 
 | Migrações | Alembic | — |
 | API | FastAPI + Uvicorn | — |
 | Validação | Pydantic v2 + pydantic-settings | — |
-| UI de demo | Streamlit | — |
+| UI de chat | Next.js (App Router) + TypeScript, em `web/` | 16 |
 | Testes | pytest, pytest-cov, pytest-asyncio | — |
 | Logs | structlog | — |
 | Qualidade | ruff, mypy | — |
@@ -68,7 +68,7 @@ Preço de item fixo de cardápio é caso de fronteira: fica no documento de card
 ```mermaid
 graph TB
     subgraph Interface
-        UI[Streamlit chat]
+        UI[Next.js chat]
         API[FastAPI /chat]
     end
 
@@ -319,8 +319,11 @@ mesa-certa/
 │       ├── logging.py       # structlog + processadores
 │       └── masking.py       # mascaramento de PII
 │
-├── ui/
-│   └── app.py               # Streamlit
+├── web/                     # front-end Next.js (§9.4)
+│   └── src/
+│       ├── app/             # layout, página, /preview (só em dev)
+│       ├── components/      # grelha, placa de reserva, bastidores
+│       └── lib/             # cliente da API e formatação
 │
 ├── evals/
 │   ├── dataset.yaml         # casos rotulados
@@ -1127,11 +1130,19 @@ class TurnResult:
     {"source": "cardapio.md", "section": "Pratos principais › Opções sem glúten"}
   ],
   "tool_calls": [
-    {"name": "consultar_disponibilidade", "ok": true, "duration_ms": 12}
+    {"name": "consultar_disponibilidade", "ok": true, "duration_ms": 12, "error_code": null}
   ],
-  "latency_ms": 3410
+  "latency_ms": 3410,
+  "iterations": 2,
+  "exhausted": false,
+  "guard_violations": [],
+  "reservation": null
 }
 ```
+
+**Campos acrescentados na F5.** `citations[].chunk_id`, `tool_calls[].error_code`, `iterations`, `exhausted`, `guard_violations` (§8.5) e `reservation`. Este último é a reserva criada, consultada ou cancelada com sucesso no turno, com os campos exatos que a tool devolveu (`tipo`, `codigo`, `data`, `dia_semana`, `horario`, `num_pessoas`, `zona`, `tolerancia_minutos`, `cancelamento_sem_onus_ate`, `situacao`, `dentro_da_janela_gratuita`, `aviso`). É o que permite à interface desenhar a confirmação a partir do sistema, e não do texto do modelo. Nunca traz nome, telefone ou e-mail.
+
+**CORS.** A API aceita chamadas das origens em `CORS_ORIGINS` (padrão `http://localhost:3000`), só com `GET` e `POST`. Uma sessão atende um turno por vez (trava por sessão), para dois pedidos simultâneos não embaralharem o histórico.
 
 ### 9.3 Tratamento de erro
 
@@ -1141,17 +1152,26 @@ class TurnResult:
 | Sessão expirada | 410 | `{"error": "SESSAO_EXPIRADA"}` |
 | API do modelo indisponível | 503 | `{"error": "MODELO_INDISPONIVEL"}` |
 | Falha interna | 500 | `{"error": "ERRO_INTERNO", "trace_id": "..."}` |
+| Mensagem longa após higiene (§8.5, P3) | 422 | `{"error": "MENSAGEM_LONGA", "detail": "..."}` |
+| Rota de debug com `DEBUG_UI=false` | 404 | `{"error": "Not Found"}` |
 
 Erro de **tool** nunca chega ao HTTP — é tratado dentro do loop (§8.1).
 
 ### 9.4 Interface de demonstração (RF-12)
 
-Streamlit em `ui/app.py`:
+> **Revisto na F5.** O Streamlit foi substituído por um front-end **Next.js 16 (App Router, TypeScript) em `web/`**. Motivo: a interface é o primeiro contato do cliente e a vitrine do portfólio, e um chat com identidade própria não cabe nos componentes do Streamlit. A API continua sendo a única fronteira: o front só chama `/chat` e, em modo debug, `/traces/{id}`.
 
-- Coluna principal: chat com histórico
-- Barra lateral em modo debug (`DEBUG_UI=true`): para cada turno, as tools chamadas com argumentos e duração, e os chunks recuperados com score e fonte
+Formato de chat consagrado por ChatGPT e Claude, por decisão registrada em `PRODUCT.md`: o chat é a página e o campo de mensagem é o elemento principal. (Uma primeira direção autoral, "Grelha de brasa", foi descartada por tirar o foco do chat.)
 
-Essa barra lateral é o que torna a demo convincente em um portfólio — torna o raciocínio do agente visível em vez de apenas o resultado.
+- Tela vazia: saudação curta, campo de mensagem grande no centro e sugestões logo abaixo (reservar mesa, opções sem glúten, política de cancelamento, prato do dia)
+- Conversa em coluna central: mensagem do cliente em balão discreto à direita; resposta do assistente em texto corrido com avatar; campo ancorado embaixo
+- Espera: indicador de digitação com contador honesto de segundos
+- Fontes como chips de documento e seção abaixo da resposta; as linhas "Fonte:" do texto do modelo são omitidas quando há citação estruturada
+- Reserva do turno (`reservation`) como cartão com código, data, horário, pessoas, zona, tolerância e prazo de cancelamento; cancelada com código riscado
+- Resposta contida pela verificação (§8.5) ou pelo limite de iterações recebe selo "Resposta segura"
+- Erros 410, 503, 500 e rede como avisos com ícone, tom e ação de recuperação próprios; 422 aparece no próprio campo de mensagem
+- Painel "Bastidores" só com `NEXT_PUBLIC_DEBUG_UI=true`: tools com argumentos mascarados, trechos com score, verificação da resposta, sinal de injeção e consumo, lidos do `/traces/{id}`
+- Rota `/preview?estado=vazio|conversa|espera|avisos|bastidores|contida|limite` com dados sintéticos, só em desenvolvimento
 
 ---
 
@@ -1402,7 +1422,7 @@ Os 4 documentos gerados fora do repositório e revisados, `chunker.py`, `embedde
 **Pronto quando:** os testes de integração com cliente falso cobrem turno simples, turno com tool, turno com duas tools, erro de tool e estouro de iterações.
 
 ### F5 — Interface
-API FastAPI, DTOs, tratamento de erro, Streamlit com barra lateral de debug.
+API FastAPI, DTOs, tratamento de erro, CORS e front-end Next.js com painel de bastidores (§9.4).
 **Pronto quando:** os cenários das US-01 a US-09 são reproduzíveis manualmente pela UI.
 
 ### F6 — Avaliação

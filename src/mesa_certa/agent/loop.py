@@ -12,7 +12,13 @@ from anthropic.types import Message
 
 from mesa_certa.agent.guards import ToolOutcome, check_reply
 from mesa_certa.agent.llm import LLMClient
-from mesa_certa.agent.models import Citation, ToolCallRecord, TurnResult
+from mesa_certa.agent.models import (
+    Citation,
+    ReservationEvent,
+    ReservationKind,
+    ToolCallRecord,
+    TurnResult,
+)
 from mesa_certa.agent.prompts import build_system_prompt
 from mesa_certa.agent.session import Session
 from mesa_certa.domain.date_resolver import Clock
@@ -21,6 +27,8 @@ from mesa_certa.observability.tracing import KNOWLEDGE_TOOL, Trace, Tracer
 from mesa_certa.sanitize import MAX_MESSAGE_CHARS, clean_message
 from mesa_certa.tools.base import ToolResult
 from mesa_certa.tools.registry import ToolRegistry
+
+TRACE_ID_ATTR = "trace_id"
 
 EXHAUSTED_REPLY = (
     "Desculpe, não consegui concluir o seu pedido agora. Para não passar nenhuma informação "
@@ -74,6 +82,7 @@ class AgentLoop:
                     )
                     turn.reply = _final_reply(response)
                     self._guard_reply(session, turn, trace, outcomes)
+                    turn.reservation = _reservation_event(outcomes)
                     return self._finish(turn, trace, started)
 
                 session.append_assistant(b.to_dict(mode="json") for b in response.content)
@@ -84,6 +93,8 @@ class AgentLoop:
                 session.append_tool_results(results)
         except Exception as exc:
             self._tracer.finish(trace, "", error=type(exc).__name__)
+            # A API devolve o trace_id no erro 500 para a falha poder ser investigada.
+            setattr(exc, TRACE_ID_ATTR, trace.trace_id)
             raise
 
         turn.exhausted = trace.exhausted = True
@@ -171,6 +182,22 @@ def _final_reply(response: Message) -> str:
         return REFUSAL_REPLY
     text = "\n\n".join(b.text for b in response.content if b.type == "text").strip()
     return text or EMPTY_REPLY
+
+
+_RESERVATION_TOOLS: dict[str, ReservationKind] = {
+    "criar_reserva": "criada",
+    "cancelar_reserva": "cancelada",
+    "consultar_reserva": "consultada",
+}
+
+
+def _reservation_event(outcomes: list[ToolOutcome]) -> ReservationEvent | None:
+    """A última reserva criada, cancelada ou consultada com sucesso no turno."""
+    for outcome in reversed(outcomes):
+        kind = _RESERVATION_TOOLS.get(outcome.name)
+        if kind is not None and outcome.ok and outcome.data is not None:
+            return ReservationEvent(kind, dict(outcome.data))
+    return None
 
 
 def _collect_citations(result: ToolResult, citations: list[Citation]) -> None:

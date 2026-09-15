@@ -1,0 +1,113 @@
+{
+  "title": "Escolha o mundo visual do chat do Mesa Certa",
+  "question": "O sorteio indicou a Grelha de brasa. Fique com ela, escolha outra carta ou peça novo sorteio.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Grelha de brasa",
+      "kicker": "O SORTEIO",
+      "lineage": "parrilla e fogo de chão gaúchos, vistos à luz do dia",
+      "thesis": "A conversa acontece sobre a grelha: a espera é brasa viva, e só o que o sistema de reservas confirma sai marcado a ferro. Recusa o chat cinza neutro e também o site creme de restaurante.",
+      "palette": ["#E6E2DC", "#1D1C1A", "#55534F", "#8F9AA0", "#D8461B"],
+      "materials": ["cinza de lenha como fundo", "ferro fundido nas linhas da grelha", "brasa só no que está acontecendo agora", "marca a fogo na reserva confirmada"],
+      "viewport": "Tela inteira de conversa sobre fundo cinza de lenha. As mensagens pousam em faixas horizontais que seguem o ritmo das barras da grelha, sem balões. O compositor é a barra frontal de ferro, larga, com rótulo escrito. Enquanto o agente trabalha, uma linha de brasa respira sob a última faixa. A reserva confirmada chega como uma placa marcada a ferro com o código, data, horário, pessoas e tolerância de 20 minutos. A fonte citada aparece como etiqueta de procedência amarrada ao pé da resposta. O vazio mostra quatro atalhos rotulados como chapas de ferro.",
+      "risk": "Se a brasa virar brilho neon sobre preto, cai no visual de IA genérico; se a grelha virar textura decorativa, vira fantasia de churrascaria.",
+      "raised": [
+        {"from": "challenger-tensegrity", "raise": "Todo estado tem forma própria e nomeada: consultando, confirmado, recusado, erro de tool e resposta trocada pela verificação nunca compartilham a mesma aparência."},
+        {"from": "challenger-orizuru", "raise": "A reserva avança numa coluna de margem numerada: disponibilidade, dados do cliente, confirmação."},
+        {"from": "challenger-six-pack", "raise": "O painel de debug é uma constelação fixa lida sempre na mesma ordem, e o score de cada trecho mostra a distância até o limiar antes de qualquer alerta."},
+        {"from": "challenger-specimen", "raise": "Hierarquia por escala e peso, sem caixas e sem sombras decorativas."},
+        {"from": "challenger-orienteering", "raise": "A cor de brasa é reservada ao que está ativo agora; em repouso, nada nela arde."},
+        {"from": "challenger-cassette", "raise": "Todo controle tem rótulo escrito; nenhum botão só de ícone."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Comanda de papel carbonado",
+      "kicker": "MINHA ESCOLHA",
+      "lineage": "bloco de comanda de garçom com vias coloridas",
+      "thesis": "Cada troca vira uma via de comanda; a reserva confirmada é o canhoto destacável com carimbo, que só o sistema emite.",
+      "palette": ["#F5DCE2", "#F2E6A6", "#23407F", "#2A2926", "#C4322B"],
+      "materials": ["vias rosa e amarela", "escrita em azul carbono", "picote e canhoto", "carimbo vermelho"],
+      "viewport": "O fio da conversa como um bloco de comandas empilhadas, o cliente em uma via e o assistente em outra, com o compositor como a folha em branco no topo do bloco.",
+      "risk": "Familiar e simpática, próxima do universo de papel que muitas interfaces de restaurante já usam."
+    },
+    {
+      "id": "challenger-tensegrity",
+      "label": "Coluna de tensegridade",
+      "verdict": "declined",
+      "lineage": "escultura cinética de barras e cordas",
+      "palette": ["#1B1B1B", "#D9D6D0", "#C62828"],
+      "materials": ["barras de carbono", "corda vermelha"],
+      "case": "Perde nos dois eixos: o cliente não se reconhece num diagrama de forças.",
+      "kept": "Estados distintos e nomeados para cada situação.",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column-hero.webp"
+    },
+    {
+      "id": "challenger-orizuru",
+      "label": "Tsuru em 32 dobras",
+      "verdict": "declined",
+      "lineage": "origami de uma folha só",
+      "palette": ["#C8372D", "#F4EDE2", "#1A1A1A"],
+      "materials": ["papel washi", "vincos"],
+      "case": "Perde nos dois eixos: a sequência de dobras não tem relação com reservar mesa.",
+      "kept": "Etapas numeradas numa coluna de margem.",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-orizuru-crane-sequence-hero.webp"
+    },
+    {
+      "id": "challenger-six-pack",
+      "label": "Painel de voo noturno",
+      "verdict": "declined",
+      "lineage": "seis instrumentos de cabine",
+      "palette": ["#0B0C0C", "#F2F2F2", "#3DDC84", "#F5A623"],
+      "materials": ["mostradores luminosos", "painel preto"],
+      "case": "Serviria ao painel de debug, mas perde para o cliente: atendimento não é cabine de avião.",
+      "kept": "Leitura fixa e cruzada dos sinais, tendência antes do alarme.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-night-flight-six-pack-hero.webp"
+    },
+    {
+      "id": "challenger-specimen",
+      "label": "Espécime tipográfico",
+      "verdict": "declined",
+      "lineage": "fonte variável interativa",
+      "palette": ["#FAFAF7", "#111111", "#E4572E"],
+      "materials": ["papel", "tinta"],
+      "case": "Perde nos dois eixos: a tipografia vira o assunto no lugar da conversa.",
+      "kept": "Hierarquia só por escala, sem ornamento.",
+      "hero": "https://impeccable.style/worlds/cards/variable-font-specimen-hero.webp"
+    },
+    {
+      "id": "challenger-orienteering",
+      "label": "Mapa de orienteering",
+      "verdict": "declined",
+      "lineage": "cartografia ISOM",
+      "palette": ["#FFFFFF", "#8A9A3B", "#F2D24B", "#8B5A2B", "#9B2FAE"],
+      "materials": ["curvas de nível", "percurso roxo"],
+      "case": "Perde nos dois eixos: o percurso no mapa não tem leitura óbvia numa conversa.",
+      "kept": "Uma cor reservada só para o trecho ativo.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-orienteering-map-hero.webp"
+    },
+    {
+      "id": "challenger-cassette",
+      "label": "Deck de fita cassete",
+      "verdict": "declined",
+      "lineage": "painel futurista de toca-fitas",
+      "palette": ["#C9CCCF", "#D8C9A8", "#1C1C1C", "#FF8A1F"],
+      "materials": ["alumínio escovado", "LED âmbar"],
+      "case": "Perde nos dois eixos: nostalgia de aparelho de som, sem ligação com a casa.",
+      "kept": "Cada função com seu próprio controle rotulado.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-cassette-futurism-deck-hero.webp"
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "canon": true,
+  "canonCard": {
+    "label": "O padrão da categoria",
+    "thesis": "O chat que ChatGPT, Claude e Gemini consagraram, executado com capricho.",
+    "palette": ["#FFFFFF", "#F4F4F5", "#18181B", "#2563EB"],
+    "materials": ["coluna central", "balões discretos", "barra lateral de conversas"],
+    "viewport": "Coluna central com as mensagens, compositor fixo embaixo e atalhos sugeridos no vazio.",
+    "risk": "Indistinguível dos concorrentes por definição."
+  },
+  "steer": true
+}

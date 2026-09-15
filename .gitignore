@@ -17,6 +17,9 @@ venv/
 .coverage
 htmlcov/
 
+# Capturas de revisão visual (regeneráveis)
+.impeccable/review/
+
 # Editor e sistema
 .vscode/
 .idea/

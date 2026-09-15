@@ -41,6 +41,8 @@ class Session:
     last_activity: datetime
     max_messages: int = 20
     messages: list[Message] = field(default_factory=list)
+    # Um turno por vez por sessão: dois pedidos simultâneos embaralhariam o histórico.
+    lock: threading.Lock = field(default_factory=threading.Lock, repr=False, compare=False)
 
     def append_user(self, text: str) -> None:
         self._prune(keep=self.max_messages - 1)

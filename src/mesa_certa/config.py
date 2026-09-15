@@ -3,6 +3,7 @@
 Único ponto do projeto que lê variáveis de ambiente (SDD §12).
 """
 
+from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -19,6 +20,8 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        # `CHAVE=` vazio no .env vale como não definido (ex.: FIXED_NOW e ANTHROPIC_API_KEY).
+        env_parse_none_str="",
         # Campos model_* colidem com o namespace protegido padrão do Pydantic.
         protected_namespaces=("settings_",),
     )
@@ -55,6 +58,10 @@ class Settings(BaseSettings):
     log_level: LogLevel = "INFO"
     trace_path: Path = Path("./data/traces")
     debug_ui: bool = False
+    # Relógio fixo para demo e avaliação: o seed é ancorado em 2026-09-15.
+    fixed_now: datetime | None = None
+    # Origens do front-end autorizadas a chamar a API (CORS).
+    cors_origins: list[str] = ["http://localhost:3000"]
 
 
 @lru_cache(maxsize=1)

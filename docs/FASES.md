@@ -12,6 +12,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
 | F4 | concluída: loop, sessão, trace e persona; cenário da US-08 validado com a API real |
 | F4.1 | código e testes sem rede concluídos (SDD §8.5); falta rodar os casos adv-004 a adv-008 no `make chat` com a API real |
+| F5 | concluída: API e front-end Next.js (formato ChatGPT/Claude) validados pela UI com a API real; pendentes menores: revisão final de design com `DESIGN.md`, teste e2e e remover a dependência do Streamlit |
 
 ## Regras gerais
 
@@ -263,27 +264,32 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 
 ## F5. Interface
 
-**Objetivo.** API HTTP e UI de demonstração.
+**Objetivo.** API HTTP e front-end de chat. **Revisto:** o Streamlit deu lugar a Next.js em `web/` (SDD §9.4), no formato ChatGPT/Claude com o campo de mensagem como protagonista (`PRODUCT.md`).
 
 **Entregas**
 
 | Arquivo | Conteúdo |
 |---|---|
-| `api/dto.py` | request e response do SDD §9.2 |
-| `api/routes.py` | endpoints do SDD §9.1 |
-| `api/main.py` | app FastAPI, montagem das dependências, handlers de erro do SDD §9.3 |
-| `ui/app.py` | Streamlit consumindo `/chat`; barra lateral de debug com `DEBUG_UI=true` |
+| `api/dto.py` | request e response do SDD §9.2, incluindo `reservation` com os dados da tool |
+| `api/routes.py` | endpoints do SDD §9.1; rotas de debug respondem 404 sem `DEBUG_UI` |
+| `api/main.py` | `create_app`, CORS, handlers de erro do SDD §9.3 |
+| `agent/factory.py` | `AgentApp` expõe settings, relógio, embedder e store para `/health` e `/admin/reindex` |
+| `web/` | Next.js 16: campo de mensagem central, conversa em coluna, cartão de reserva, chips de fonte, avisos por erro, bastidores, `/preview` só em dev |
 
 **Regras**
-- `/admin/reindex` e `/reservations/{code}` só ficam ativos com `DEBUG_UI=true`.
-- `/health` verifica banco, collection não vazia e presença da chave da API.
+- `/traces/{id}`, `/admin/reindex` e `/reservations/{code}` só existem com `DEBUG_UI=true`.
+- `/health` verifica banco, collection não vazia e presença da chave da API; responde 503 se algo falha.
+- O front nunca deduz reserva do texto do modelo: a placa só aparece com `reservation` vindo da API.
+- `FIXED_NOW` fixa o relógio da API para a demo bater com o seed.
 
 **Testes**
-- `tests/integration/test_api.py` com `TestClient` e agente falso: sessão nova, sessão expirada (410), modelo indisponível (503).
-- `tests/e2e/test_chat.py` marcado `e2e`, fora do `make test`.
+- `tests/integration/test_api.py`: contrato do `/chat`, reserva criada, sessão reaproveitada, 410, 503, 500 com `trace_id`, 422, CORS, `/health` e rotas de debug.
+- `web/src/lib/format.test.ts` (vitest): formatação, remoção das linhas de fonte e mapeamento de erros.
+- Pendente: `tests/e2e/test_chat.py` marcado `e2e`, com a API real.
 
 **Pronto quando**
-- US-01 a US-09 reproduzidas manualmente pela UI, com a barra de debug mostrando tools e chunks.
+- US-01 a US-09 reproduzidas manualmente pela UI com a API real, com os bastidores mostrando tools e chunks.
+- Revisão final do Impeccable fechada e `DESIGN.md` gravado.
 
 ---
 

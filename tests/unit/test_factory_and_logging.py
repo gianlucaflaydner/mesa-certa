@@ -7,7 +7,6 @@ from mesa_certa.agent.factory import WORKSPACE_HEADER, build_app, build_clock, b
 from mesa_certa.config import Settings
 from mesa_certa.domain.date_resolver import FixedClock, SystemClock
 from mesa_certa.observability.logging import configure_logging, mask_event
-from mesa_certa.rag.retriever import Retriever
 from mesa_certa.rag.store import ChunkStore
 from tests.fakes import HashingEmbedder, ScriptedLLM, text_response
 
@@ -17,6 +16,13 @@ AGORA = datetime(2026, 9, 15, 14, tzinfo=ZoneInfo("America/Sao_Paulo"))
 def test_build_clock_fixo_ou_do_sistema(settings: Settings) -> None:
     assert isinstance(build_clock(settings, AGORA), FixedClock)
     assert isinstance(build_clock(settings), SystemClock)
+
+
+def test_build_clock_usa_fixed_now_das_settings(settings: Settings) -> None:
+    clock = build_clock(settings.model_copy(update={"fixed_now": AGORA}))
+
+    assert isinstance(clock, FixedClock)
+    assert clock.now() == AGORA
 
 
 def test_build_llm_usa_modelo_effort_e_limite_das_settings(settings: Settings) -> None:
@@ -44,9 +50,11 @@ def test_build_llm_envia_workspace_quando_configurado(settings: Settings) -> Non
 
 def test_build_app_monta_agente_que_conclui_turno(settings: Settings) -> None:
     clock = FixedClock(AGORA)
-    retriever = Retriever(HashingEmbedder(), ChunkStore(settings.chroma_path, "vazia"))
-    app = build_app(settings, clock, ScriptedLLM(text_response("Olá!")), retriever)
+    store = ChunkStore(settings.chroma_path, "vazia")
+    app = build_app(settings, clock, ScriptedLLM(text_response("Olá!")), HashingEmbedder(), store)
     try:
+        assert app.store is store
+        assert app.settings is settings
         session = app.sessions.create()
         result = app.agent.run_turn(session, "oi")
 

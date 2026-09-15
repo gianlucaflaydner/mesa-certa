@@ -1,6 +1,6 @@
 """Montagem das dependências do agente a partir das Settings.
 
-Usada pelo chat de terminal agora e pela API na F5, para que os dois montem o sistema igual.
+Usada pelo chat de terminal e pela API, para que os dois montem o sistema igual.
 """
 
 from dataclasses import dataclass
@@ -20,7 +20,7 @@ from mesa_certa.domain.date_resolver import Clock, FixedClock, SystemClock
 from mesa_certa.domain.menu import MenuService
 from mesa_certa.domain.reservations import ReservationService
 from mesa_certa.observability.tracing import Tracer
-from mesa_certa.rag.embedder import Embedder
+from mesa_certa.rag.embedder import Embedder, TextEmbedder
 from mesa_certa.rag.retriever import Retriever
 from mesa_certa.rag.store import ChunkStore
 from mesa_certa.tools import ToolServices, build_registry
@@ -29,18 +29,24 @@ from mesa_certa.tools.registry import ToolRegistry
 
 @dataclass
 class AgentApp:
+    settings: Settings
+    clock: Clock
     engine: Engine
     registry: ToolRegistry
     sessions: SessionStore
     tracer: Tracer
     agent: AgentLoop
+    embedder: TextEmbedder
+    store: ChunkStore
 
     def close(self) -> None:
         self.engine.dispose()
 
 
 def build_clock(settings: Settings, fixed_at: datetime | None = None) -> Clock:
-    return FixedClock(fixed_at) if fixed_at else SystemClock(ZoneInfo(settings.timezone))
+    """Relógio fixo se pedido (argumento ou FIXED_NOW), senão o do sistema no fuso da casa."""
+    fixed = fixed_at or settings.fixed_now
+    return FixedClock(fixed) if fixed else SystemClock(ZoneInfo(settings.timezone))
 
 
 WORKSPACE_HEADER = "anthropic-workspace-id"
@@ -61,10 +67,10 @@ def build_llm(settings: Settings) -> AnthropicLLM:
     )
 
 
-def build_retriever(settings: Settings) -> Retriever:
+def build_retriever(settings: Settings, embedder: TextEmbedder, store: ChunkStore) -> Retriever:
     return Retriever(
-        Embedder(settings.embedding_model),
-        ChunkStore(settings.chroma_path, settings.chroma_collection),
+        embedder,
+        store,
         top_k=settings.rag_top_k,
         similarity_threshold=settings.rag_similarity_threshold,
         max_context_chars=settings.rag_max_context_chars,
@@ -75,8 +81,11 @@ def build_app(
     settings: Settings,
     clock: Clock,
     llm: LLMClient | None = None,
-    retriever: Retriever | None = None,
+    embedder: TextEmbedder | None = None,
+    store: ChunkStore | None = None,
 ) -> AgentApp:
+    embedder = embedder or Embedder(settings.embedding_model)
+    store = store or ChunkStore(settings.chroma_path, settings.chroma_collection)
     engine = create_db_engine(settings.database_url)
     factory = create_session_factory(engine)
     services = ToolServices(
@@ -85,7 +94,7 @@ def build_app(
         menu=MenuService(factory),
         clock=clock,
     )
-    registry = build_registry(services, retriever or build_retriever(settings))
+    registry = build_registry(services, build_retriever(settings, embedder, store))
     tracer = Tracer(clock, settings.trace_path)
     agent = AgentLoop(
         llm or build_llm(settings),
@@ -95,4 +104,4 @@ def build_app(
         max_iterations=settings.agent_max_iterations,
     )
     sessions = SessionStore(clock, settings.session_ttl_minutes, settings.session_max_messages)
-    return AgentApp(engine, registry, sessions, tracer, agent)
+    return AgentApp(settings, clock, engine, registry, sessions, tracer, agent, embedder, store)

@@ -1,0 +1,4 @@
+﻿DIRECTION CONCEPT SEED (key: a5aeb468; mode: operate; source: api; approved pool: c3b204a1eed6; 306/564 human-approved; rerun with --scope direction --mode operate --from a5aeb468 --candidate-count 7 to reproduce this roll against this catalog revision)
+ASSIGNED INDEX: 6
+  After ordering the grounded directions by resonance, build candidate
+ANSWER: {"optionId":"assigned","steer":""} (Grelha de brasa, candidata 6)

@@ -1,6 +1,18 @@
 """Estruturas de resultado de um turno (SDD §8.3)."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
+from typing import Any, Literal
+
+ReservationKind = Literal["criada", "consultada", "cancelada"]
+
+
+@dataclass(frozen=True)
+class ReservationEvent:
+    """Reserva tocada no turno, com os dados exatos que a tool devolveu (nunca do texto)."""
+
+    kind: ReservationKind
+    data: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -48,5 +60,6 @@ class TurnResult:
     iterations: int = 0
     exhausted: bool = False
     guard_violations: list[str] = field(default_factory=list)
+    reservation: ReservationEvent | None = None
     latency_ms: int = 0
     usage: TokenUsage = field(default_factory=TokenUsage)

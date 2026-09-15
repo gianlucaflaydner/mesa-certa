@@ -55,6 +55,24 @@ def test_variavel_de_ambiente_sobrescreve(ambiente_limpo: pytest.MonkeyPatch) ->
     assert s.trace_path == Path("/tmp/traces")
 
 
+def test_valores_vazios_do_env_example_valem_como_nao_definidos(
+    ambiente_limpo: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "ANTHROPIC_API_KEY=\nANTHROPIC_WORKSPACE_ID=\nFIXED_NOW=\n"
+        'CORS_ORIGINS=["http://localhost:3000","https://mesacerta.example"]\n',
+        encoding="utf-8",
+    )
+
+    s = Settings(_env_file=env_file)
+
+    assert s.anthropic_api_key is None
+    assert s.anthropic_workspace_id is None
+    assert s.fixed_now is None
+    assert s.cors_origins == ["http://localhost:3000", "https://mesacerta.example"]
+
+
 def test_chave_nao_aparece_no_repr(ambiente_limpo: pytest.MonkeyPatch) -> None:
     ambiente_limpo.setenv("ANTHROPIC_API_KEY", "sk-segredo")
 
