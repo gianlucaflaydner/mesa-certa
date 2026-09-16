@@ -9,13 +9,14 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 | PRD e SDD | versionados em `docs/` |
 | Base de conhecimento | 4 documentos em `data/knowledge/`, revisados |
 | Dataset de avaliação | `evals/dataset.yaml`, 43 casos (8 adversariais, 2 do cardápio em PDF), validado contra os cabeçalhos reais |
+| v1 | **concluída**: F0 a F7 fechadas pelos critérios de pronto |
 | Código | F0 a F3 concluídas: domínio, banco, seed, RAG e as 6 tools com registry |
 | F4 | concluída: loop, sessão, trace e persona; cenário da US-08 validado com a API real |
-| F4.1 | código e testes sem rede concluídos (SDD §8.5); falta rodar os casos adv-004 a adv-008 no `make chat` com a API real |
+| F4.1 | concluída: código e testes sem rede (SDD §8.5); adv-004 a adv-008 validados com a API real pela suite da F6 (`evals/results/2026-09-15-1642-agente.md`), 100% na categoria adversarial nas 3 repetições e zero `guard_violations`, ou seja, a defesa principal foi o prompt e a P5 não precisou agir |
 | F5 | concluída: API e front-end Next.js (formato ChatGPT/Claude) validados pela UI com a API real; revisão final de design fechada com `DESIGN.md`; `tests/e2e/test_chat.py` passando; Streamlit removido |
-| F6 | suite de avaliação em `evals/` (busca, varredura do limiar e agente); limiar fixado em 0,85 (D5); última rodada (`evals/results/2026-09-15-1642-agente.md`, 43 casos, 3 repetições): 97,7% dos casos aprovados, roteamento e recusa em 100%, zero termos proibidos, p95 7,5 s. Único alvo abaixo: citação 93,8%, só por rag-007 (score 0,827, abaixo do limiar 0,85; custo conhecido do D5) |
-| F7 | Dockerfile multi-stage com o modelo embutido, docker-compose com volume e healthcheck, entrypoint idempotente, 6 ADRs em `docs/adr/`, CI no GitHub Actions, README final e travessões removidos do PRD e do SDD (D3). Falta apenas gravar `docs/demo.gif` |
-| Cardápio em PDF | tool `enviar_cardapio` (SDD §7.8), rota `GET /arquivos/cardapio.pdf` e cartão com Abrir e Baixar no front; o PDF de `docs/` precisa entrar na imagem da F7 |
+| F6 | concluída: suite de avaliação em `evals/` (busca, varredura do limiar e agente); limiar fixado em 0,85 (D5); última rodada (`evals/results/2026-09-15-1642-agente.md`, 43 casos, 3 repetições): 97,7% dos casos aprovados, roteamento e recusa em 100%, zero termos proibidos, p95 7,5 s. Único alvo abaixo: citação 93,8%, só por rag-007 (score 0,827, abaixo do limiar 0,85; custo conhecido do D5) |
+| F7 | concluída: Dockerfile multi-stage com o modelo embutido, docker-compose com volume e healthcheck, entrypoint idempotente, 6 ADRs em `docs/adr/`, CI no GitHub Actions com badge no README, licença MIT, README final com `docs/demo.gif` e travessões removidos do PRD e do SDD (D3) |
+| Cardápio em PDF | concluído: tool `enviar_cardapio` (SDD §7.8), rota `GET /arquivos/cardapio.pdf` e cartão com Abrir e Baixar no front; o PDF de `docs/` entra na imagem da F7 |
 
 ## Regras gerais
 
@@ -288,7 +289,7 @@ Documento de execução da v1. Detalha as fases F0 a F7 do [SDD §14](SDD.md#14-
 **Testes**
 - `tests/integration/test_api.py`: contrato do `/chat`, reserva criada, sessão reaproveitada, 410, 503, 500 com `trace_id`, 422, CORS, `/health` e rotas de debug.
 - `web/src/lib/format.test.ts` (vitest): formatação, remoção das linhas de fonte e mapeamento de erros.
-- Pendente: `tests/e2e/test_chat.py` marcado `e2e`, com a API real.
+- `tests/e2e/test_chat.py` marcado `e2e`, com a API real.
 
 **Pronto quando**
 - US-01 a US-09 reproduzidas manualmente pela UI com a API real, com os bastidores mostrando tools e chunks.

@@ -1,5 +1,8 @@
 # Mesa Certa
 
+[![CI](https://github.com/gianlucaflaydner/mesa-certa/actions/workflows/ci.yml/badge.svg)](https://github.com/gianlucaflaydner/mesa-certa/actions/workflows/ci.yml)
+[![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](LICENSE)
+
 Assistente conversacional de restaurante que responde sobre cardápio, ingredientes e políticas a partir de uma base de conhecimento com citação de fonte, e consulta, cria e cancela reservas por meio de tools transacionais sobre banco relacional.
 
 O princípio que organiza o projeto: **conhecimento descritivo vem do RAG, estado do mundo vem de tool transacional**. Ingrediente de prato é documento; mesa livre no sábado é consulta ao banco.
@@ -119,3 +122,7 @@ Testes cobrem unidade, integração, contrato (os schemas das tools são compara
 ## Stack
 
 Python 3.12, FastAPI, SQLAlchemy 2 com Alembic e SQLite, ChromaDB, sentence-transformers (e5 multilingual small), SDK da Anthropic, structlog, pytest, ruff e mypy. Front em Next.js 16 com React 19. Empacotamento em Docker com Compose.
+
+## Licença
+
+[MIT](LICENSE)
