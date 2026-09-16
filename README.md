@@ -96,10 +96,6 @@ Varredura de 0,60 a 0,95 sobre 17 perguntas com trecho esperado e 5 perguntas fo
 | 0,87 | 58,8% | 0,0% | 0,59 |
 | 0,90 | 11,8% | 0,0% | 0,12 |
 
-O valor inicial de 0,72 aceitava qualquer pergunta como coberta pela base, e o assistente nunca recusaria. O platô entre 0,84 e 0,85 zera o falso positivo mantendo recall de 88,2%. A margem é estreita, porque o e5 concentra scores: o menor acerto marca 0,827 e a pergunta fora da base mais parecida marca 0,837. Um reranker separaria melhor do que qualquer ajuste de limiar, e é a primeira candidata da v2.
-
-Recuperação isolada, sem custo de API: hit@3 de 94,1% (alvo 90%) e MRR de 0,755 (alvo 0,80).
-
 ## Qualidade
 
 ```bash
