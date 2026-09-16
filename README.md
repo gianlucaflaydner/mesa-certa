@@ -1,6 +1,6 @@
 # Mesa Certa
 
-Assistente conversacional de restaurante que responde sobre cardápio, alérgenos e políticas a partir de uma base de conhecimento com citação de fonte, e consulta, cria e cancela reservas por meio de tools transacionais sobre banco relacional.
+Assistente conversacional de restaurante que responde sobre cardápio, ingredientes e políticas a partir de uma base de conhecimento com citação de fonte, e consulta, cria e cancela reservas por meio de tools transacionais sobre banco relacional.
 
 O princípio que organiza o projeto: **conhecimento descritivo vem do RAG, estado do mundo vem de tool transacional**. Ingrediente de prato é documento; mesa livre no sábado é consulta ao banco.
 
