@@ -1,10 +1,10 @@
-# SDD — Mesa Certa
+# SDD: Mesa Certa
 
 **Software Design Document**
 
 | Campo | Valor |
 |---|---|
-| Produto | Mesa Certa — assistente conversacional de restaurante |
+| Produto | Mesa Certa, assistente conversacional de restaurante |
 | Versão do documento | 1.0 |
 | Data | 2026-09-14 |
 | Autor | Gian Flaydner |
@@ -19,11 +19,11 @@
 
 Aplicação Python monolítica composta por cinco camadas:
 
-1. **Interface** — API HTTP (FastAPI) e UI de chat (Next.js em `web/`, §9.4)
-2. **Agente** — loop de tool calling próprio sobre o SDK da Anthropic
-3. **Tools** — funções Python com schema declarado, registradas em um registry
-4. **Domínio** — serviços de disponibilidade, reserva e cardápio sobre SQLite
-5. **RAG** — ingestão, indexação e recuperação sobre ChromaDB com embeddings locais
+1. **Interface**, API HTTP (FastAPI) e UI de chat (Next.js em `web/`, §9.4)
+2. **Agente**, loop de tool calling próprio sobre o SDK da Anthropic
+3. **Tools**, funções Python com schema declarado, registradas em um registry
+4. **Domínio**, serviços de disponibilidade, reserva e cardápio sobre SQLite
+5. **RAG**, ingestão, indexação e recuperação sobre ChromaDB com embeddings locais
 
 Não há serviço externo além da API do modelo. Banco e índice vetorial são arquivos em disco.
 
@@ -32,19 +32,19 @@ Não há serviço externo além da API do modelo. Banco e índice vetorial são 
 | Camada | Tecnologia | Versão alvo |
 |---|---|---|
 | Linguagem | Python | 3.12 |
-| Gerenciador de dependências | uv | — |
+| Gerenciador de dependências | uv | não há |
 | LLM | Claude via `anthropic` SDK | modelo configurável por env |
-| Embeddings | `sentence-transformers` — `intfloat/multilingual-e5-small` | 384 dimensões |
-| Vector store | ChromaDB (PersistentClient) | — |
-| Banco relacional | SQLite + SQLAlchemy 2.x | — |
-| Migrações | Alembic | — |
-| API | FastAPI + Uvicorn | — |
-| Validação | Pydantic v2 + pydantic-settings | — |
+| Embeddings | `sentence-transformers`, `intfloat/multilingual-e5-small` | 384 dimensões |
+| Vector store | ChromaDB (PersistentClient) | não há |
+| Banco relacional | SQLite + SQLAlchemy 2.x | não há |
+| Migrações | Alembic | não há |
+| API | FastAPI + Uvicorn | não há |
+| Validação | Pydantic v2 + pydantic-settings | não há |
 | UI de chat | Next.js (App Router) + TypeScript, em `web/` | 16 |
-| Testes | pytest, pytest-cov, pytest-asyncio | — |
-| Logs | structlog | — |
-| Qualidade | ruff, mypy | — |
-| Container | Docker + Docker Compose | — |
+| Testes | pytest, pytest-cov, pytest-asyncio | não há |
+| Logs | structlog | não há |
+| Qualidade | ruff, mypy | não há |
+| Container | Docker + Docker Compose | não há |
 
 ### 1.3 Princípio arquitetural central
 
@@ -175,7 +175,7 @@ graph LR
 
 Registradas como ADRs em `docs/adr/`. Resumo:
 
-### ADR-001 — Loop de tool calling próprio em vez de framework
+### ADR-001: Loop de tool calling próprio em vez de framework
 
 **Contexto.** LangChain e LangGraph resolveriam a orquestração com menos código.
 
@@ -187,29 +187,29 @@ Registradas como ADRs em `docs/adr/`. Resumo:
 
 ---
 
-### ADR-002 — Recuperação como tool (agentic RAG)
+### ADR-002: Recuperação como tool (agentic RAG)
 
 **Contexto.** O pipeline clássico de RAG recupera antes de toda geração.
 
 **Decisão.** Expor a recuperação como a tool `buscar_conhecimento`, que o modelo decide quando chamar.
 
-**Razão.** Nem todo turno precisa de recuperação — "quero cancelar a reserva K7M2QP" não precisa. Recuperar sempre injeta ruído no contexto e gasta tokens. Como tool, a decisão de recuperar fica visível no trace e mensurável como acurácia de roteamento.
+**Razão.** Nem todo turno precisa de recuperação, "quero cancelar a reserva K7M2QP" não precisa. Recuperar sempre injeta ruído no contexto e gasta tokens. Como tool, a decisão de recuperar fica visível no trace e mensurável como acurácia de roteamento.
 
 **Consequência.** O modelo pode deixar de chamar a tool quando deveria. Mitigado por instrução explícita no system prompt e por casos dedicados na suite de avaliação.
 
 ---
 
-### ADR-003 — Embeddings locais
+### ADR-003: Embeddings locais
 
 **Decisão.** `intfloat/multilingual-e5-small` via `sentence-transformers`, rodando em CPU.
 
-**Razão.** Zero custo por reindexação (RNF-07), funciona offline, e a base tem poucos milhares de chunks — CPU é suficiente. O modelo tem bom desempenho em português e apenas 384 dimensões, o que mantém o índice leve.
+**Razão.** Zero custo por reindexação (RNF-07), funciona offline, e a base tem poucos milhares de chunks, CPU é suficiente. O modelo tem bom desempenho em português e apenas 384 dimensões, o que mantém o índice leve.
 
 **Consequência.** O modelo E5 exige prefixos assimétricos: `query: ` para consultas e `passage: ` para documentos. Omitir os prefixos degrada a recuperação de forma silenciosa. O `Embedder` encapsula isso e há teste que garante o comportamento.
 
 ---
 
-### ADR-004 — SQLite e ChromaDB em disco
+### ADR-004: SQLite e ChromaDB em disco
 
 **Decisão.** Nenhum serviço de banco em container separado.
 
@@ -219,7 +219,7 @@ Registradas como ADRs em `docs/adr/`. Resumo:
 
 ---
 
-### ADR-005 — Resolução de datas em código, não no modelo
+### ADR-005: Resolução de datas em código, não no modelo
 
 **Decisão.** O agente recebe a data e hora atuais no system prompt e envia datas em ISO para as tools, mas toda validação e normalização acontece em `date_resolver.py`. Expressões relativas ambíguas são devolvidas ao usuário para confirmação.
 
@@ -229,11 +229,11 @@ Registradas como ADRs em `docs/adr/`. Resumo:
 
 ---
 
-### ADR-006 — Busca puramente vetorial na v1
+### ADR-006: Busca puramente vetorial na v1
 
 **Decisão.** Sem BM25, sem reranker.
 
-**Razão.** Estabelecer baseline mensurável antes de otimizar. A busca híbrida entra na v2 com comparação numérica contra este baseline — o que é um argumento melhor de portfólio do que já começar complexo.
+**Razão.** Estabelecer baseline mensurável antes de otimizar. A busca híbrida entra na v2 com comparação numérica contra este baseline, o que é um argumento melhor de portfólio do que já começar complexo.
 
 ---
 
@@ -245,8 +245,14 @@ mesa-certa/
 ├── pyproject.toml
 ├── Makefile
 ├── docker-compose.yml
-├── Dockerfile
+├── Dockerfile              # imagem da API, multi-stage
 ├── .env.example
+│
+├── docker/
+│   └── entrypoint.sh       # migra, semeia e indexa antes de subir
+│
+├── .github/workflows/
+│   └── ci.yml              # lint, tipos, testes e avaliação de recuperação
 │
 ├── docs/
 │   ├── PRD.md
@@ -274,7 +280,7 @@ mesa-certa/
 │   ├── config.py            # Settings via pydantic-settings
 │   │
 │   ├── agent/
-│   │   ├── loop.py          # AgentLoop — núcleo do tool calling
+│   │   ├── loop.py          # AgentLoop: núcleo do tool calling
 │   │   ├── prompts.py       # system prompt e templates
 │   │   ├── session.py       # histórico por sessão
 │   │   ├── llm.py           # LLMClient, AnthropicLLM, ModelUnavailable
@@ -334,6 +340,7 @@ mesa-certa/
 │       └── .gitkeep
 │
 ├── scripts/
+│   ├── bootstrap.py           # preparo idempotente usado pelo entrypoint
 │   ├── ingest.py
 │   ├── search.py            # busca manual por linha de comando
 │   ├── tool.py              # chama uma tool pelo registry e imprime o envelope
@@ -444,7 +451,7 @@ CREATE INDEX idx_specials_date ON daily_specials (special_date);
 - `service_hours` conforme §4.2 do PRD
 - 3 datas de fechamento futuras (exemplo: 25/12, 01/01, mais uma manutenção)
 - Pratos do dia para os próximos 14 dias (2 por dia, inclusive segundas, de 2026-09-15 a 2026-09-28)
-- 12 reservas pré-existentes distribuídas, incluindo um sábado às 20:00 com o mezanino lotado — necessário para reproduzir o cenário de indisponibilidade da US-04
+- 12 reservas pré-existentes distribuídas, incluindo um sábado às 20:00 com o mezanino lotado, necessário para reproduzir o cenário de indisponibilidade da US-04
 
 O seed usa `random.Random(42)` para ser reproduzível. A suite de avaliação depende dessa reprodutibilidade.
 
@@ -469,9 +476,9 @@ class AvailabilityResult:
     next_open_date: date | None            # preenchido junto com closed_reason
 ```
 
-**Algoritmo de consulta** — `check(date, party_size, time | None)`:
+**Algoritmo de consulta**, `check(date, party_size, time | None)`:
 
-1. Rejeita `party_size` fora de 1–12 → erro `GRUPO_ACIMA_DO_LIMITE` (RN-01)
+1. Rejeita `party_size` fora de 1 a 12 → erro `GRUPO_ACIMA_DO_LIMITE` (RN-01)
 2. Rejeita data fora da janela de 60 min a 60 dias → erro `FORA_DA_JANELA` (RN-02)
 3. Verifica `closures` e `service_hours` do dia → se fechado, retorna `closed_reason` (RN-03)
 4. Gera os slots válidos do dia: de `opens_at` até `closes_at − 90 min`, passo de 30 min (RN-04)
@@ -493,7 +500,7 @@ def cancel(code: str, reason: str | None) -> CancellationResult
 
 **Criação.** Executada dentro de uma única transação:
 
-1. Revalida todas as regras de RN-01 a RN-04 — a consulta de disponibilidade anterior **não** é confiável, pode ter ficado obsoleta (R-04)
+1. Revalida todas as regras de RN-01 a RN-04, a consulta de disponibilidade anterior **não** é confiável, pode ter ficado obsoleta (R-04)
 2. Seleciona as mesas (§5.6) com `SELECT ... FOR UPDATE` equivalente (em SQLite, `BEGIN IMMEDIATE`)
 3. Revalida ausência de sobreposição
 4. Gera o código (§5.7) e insere; `UNIQUE` em `code` é a última linha de defesa, com até 5 tentativas em caso de colisão
@@ -504,7 +511,7 @@ Falha em qualquer passo → rollback e `ToolError` com código estruturado. O ag
 
 **Cancelamento.** Se `status != 'CONFIRMADA'` → erro `JA_CANCELADA` (RN-14). Caso contrário, atualiza `status`, `cancelled_at`, `cancellation_reason`, e retorna `within_free_window: bool` calculado contra o limite de 4 horas (RN-13).
 
-### 5.5 Resolução de datas — `date_resolver.py`
+### 5.5 Resolução de datas: `date_resolver.py`
 
 Responsabilidades:
 
@@ -524,12 +531,12 @@ O modelo recebe no system prompt a data e hora atuais e o dia da semana. Ele con
 
 | Tamanho do grupo | Mesas alocadas |
 |---|---|
-| 1–2 | Uma mesa da varanda (2 lugares); se esgotadas, uma do salão |
-| 3–4 | Uma mesa do salão (4 lugares); se esgotadas, uma do mezanino |
-| 5–6 | Uma mesa do mezanino (6 lugares) |
-| 7–12 | Duas mesas do mezanino unidas (`combinable = 1`) |
+| 1 a 2 | Uma mesa da varanda (2 lugares); se esgotadas, uma do salão |
+| 3 a 4 | Uma mesa do salão (4 lugares); se esgotadas, uma do mezanino |
+| 5 a 6 | Uma mesa do mezanino (6 lugares) |
+| 7 a 12 | Duas mesas do mezanino unidas (`combinable = 1`) |
 
-Regra geral: escolher a **menor** capacidade suficiente, para não desperdiçar mesas grandes. Entre mesas de mesma capacidade, escolher a de menor `id` — garante determinismo nos testes.
+Regra geral: escolher a **menor** capacidade suficiente, para não desperdiçar mesas grandes. Entre mesas de mesma capacidade, escolher a de menor `id`, garante determinismo nos testes.
 
 ### 5.7 Geração do código de reserva (RN-12)
 
@@ -538,7 +545,7 @@ ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # sem 0, O, 1, I
 LENGTH = 6
 ```
 
-`secrets.choice` sobre o alfabeto. Espaço de 32⁶ ≈ 1,07 bilhão — colisão desprezível, mas tratada.
+`secrets.choice` sobre o alfabeto. Espaço de 32⁶ ≈ 1,07 bilhão, colisão desprezível, mas tratada.
 
 ### 5.8 Erros de domínio
 
@@ -552,11 +559,11 @@ Todos herdam de `DomainError` e carregam um `code` estável, consumido pelo agen
 | `DIA_FECHADO` | Segunda-feira ou data em `closures` | RN-03 |
 | `HORARIO_FORA_DE_SERVICO` | Horário fora do serviço ou após a última reserva | RN-04 |
 | `SEM_DISPONIBILIDADE` | Nenhuma mesa comporta o grupo no horário | RN-06 |
-| `RESERVA_NAO_ENCONTRADA` | Código inexistente | — |
+| `RESERVA_NAO_ENCONTRADA` | Código inexistente | não há |
 | `JA_CANCELADA` | Tentativa de cancelar reserva não ativa | RN-14 |
 | `FORMATO_DATA_INVALIDO` | Data fora de ISO | ADR-005 |
 | `FORMATO_HORARIO_INVALIDO` | Horário fora de `HH:MM` em slot de 30 min | ADR-005 |
-| `CARDAPIO_INDISPONIVEL` | PDF do cardápio ausente no servidor (§7.8) | — |
+| `CARDAPIO_INDISPONIVEL` | PDF do cardápio ausente no servidor (§7.8) | não há |
 
 ---
 
@@ -564,7 +571,7 @@ Todos herdam de `DomainError` e carregam um `code` estável, consumido pelo agen
 
 ### 6.1 Documentos da base
 
-Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **revisados manualmente e versionados**. Não há script de geração no projeto. A partir daí são artefatos estáveis do repositório — a suite de avaliação depende do conteúdo exato.
+Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **revisados manualmente e versionados**. Não há script de geração no projeto. A partir daí são artefatos estáveis do repositório, a suite de avaliação depende do conteúdo exato.
 
 | Arquivo | Conteúdo | Tamanho alvo |
 |---|---|---|
@@ -577,9 +584,9 @@ Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **re
 
 - Cada documento começa com `# Título`
 - Seções em `##`, subseções em `###`
-- Nenhuma seção ultrapassa 1.200 caracteres — se ultrapassar, é dividida em subseções
+- Nenhuma seção ultrapassa 1.200 caracteres, se ultrapassar, é dividida em subseções
 - Tabelas de alérgenos ficam inteiramente dentro de uma única seção (R-05)
-- Nenhuma informação de disponibilidade, horário de mesa livre ou preço de prato do dia — isso é domínio de tool
+- Nenhuma informação de disponibilidade, horário de mesa livre ou preço de prato do dia, isso é domínio de tool
 
 ### 6.2 Chunking
 
@@ -587,7 +594,7 @@ Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **re
 
 1. Faz parse do Markdown preservando a hierarquia de cabeçalhos
 2. Cada seção de nível mais profundo (`###` quando existir, senão `##`) vira um chunk candidato
-3. O texto do chunk recebe um prefixo de contexto: `"{título do documento} > {H2} > {H3}\n\n{conteúdo}"` — isso melhora a recuperação, pois o embedding passa a carregar o caminho hierárquico
+3. O texto do chunk recebe um prefixo de contexto: `"{título do documento} > {H2} > {H3}\n\n{conteúdo}"`, isso melhora a recuperação, pois o embedding passa a carregar o caminho hierárquico
 4. Chunk com mais de 1.200 caracteres é dividido por parágrafo, com 1 parágrafo de sobreposição; tabelas nunca são divididas
 5. Chunk com menos de 80 caracteres é fundido com o irmão seguinte (mesmo pai na hierarquia), herda o `chunk_id` dele e leva o próprio título como primeira linha; sem irmão seguinte, fica sozinho
 6. O preâmbulo antes do primeiro `##` não vira chunk
@@ -597,7 +604,7 @@ Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **re
 ```python
 {
     "source": "cardapio.md",
-    "doc_title": "Cardápio — Mesa Certa",
+    "doc_title": "Cardápio, Mesa Certa",
     "section_path": "Pratos principais > Opções sem glúten",
     "chunk_id": "cardapio.md#pratos-principais>opcoes-sem-gluten#0",
     "content_hash": "sha256 do texto enviado ao embedding (prefixo + conteúdo)",
@@ -606,7 +613,7 @@ Gerados uma única vez com apoio de LLM, **fora do repositório**, e depois **re
 }
 ```
 
-`chunk_id` é estável e determinístico — é ele que o dataset de avaliação referencia como resposta esperada.
+`chunk_id` é estável e determinístico, é ele que o dataset de avaliação referencia como resposta esperada.
 
 **Regra de formação do `chunk_id`.**
 
@@ -631,7 +638,7 @@ Como o slug descarta pontuação, `Alérgenos: entradas` e `Alérgenos, entradas
    - `chunk_id` presente no índice e ausente nos documentos → remove
 4. Emite relatório: criados, atualizados, removidos, inalterados
 
-Rodar duas vezes seguidas sem alterar arquivo deve resultar em zero operações de escrita — há teste de integração para isso.
+Rodar duas vezes seguidas sem alterar arquivo deve resultar em zero operações de escrita, há teste de integração para isso.
 
 ### 6.4 Recuperação
 
@@ -659,7 +666,7 @@ Parâmetros padrão:
 | `similarity_threshold` | 0,85 | `RAG_SIMILARITY_THRESHOLD` |
 | `max_context_chars` | 4.000 | `RAG_MAX_CONTEXT_CHARS` |
 
-O Chroma devolve distância; o retriever converte para similaridade de cosseno e filtra pelo limiar. `Retriever.search` devolve o ranking bruto, sem limiar nem orçamento, e é a base das métricas de recuperação da F6; `Retriever.retrieve` aplica limiar e `max_context_chars`. Se **nenhum** chunk atinge o limiar, `below_threshold = True` e a tool retorna uma estrutura vazia com mensagem explícita — o que dispara o comportamento de recusa do RF-15 e da RN-10.
+O Chroma devolve distância; o retriever converte para similaridade de cosseno e filtra pelo limiar. `Retriever.search` devolve o ranking bruto, sem limiar nem orçamento, e é a base das métricas de recuperação da F6; `Retriever.retrieve` aplica limiar e `max_context_chars`. Se **nenhum** chunk atinge o limiar, `below_threshold = True` e a tool retorna uma estrutura vazia com mensagem explícita, o que dispara o comportamento de recusa do RF-15 e da RN-10.
 
 > **Calibração (F6, decisão D5).** O ponto de partida era 0,72. A varredura de `make eval-retrieval` foi de 0,60 a 0,95 em passos de 0,01. Com o e5-small os scores ficam comprimidos: até 0,75 todas as perguntas fora da base passavam no limiar (o agente nunca recusaria). O platô com o melhor saldo (recall 88,2%, falso positivo 0%) vai de 0,84 a 0,85, e o valor fixado é **0,85**, o meio do platô arredondado para cima. A margem é estreita: a pergunta fora da base mais parecida pontuou 0,837, e a amostra de negativos tem só 5 casos. O relatório com a curva completa fica em `evals/results/`.
 
@@ -669,7 +676,7 @@ A tool devolve ao modelo cada trecho já rotulado:
 
 ```
 [1] cardapio.md › Pratos principais › Opções sem glúten (relevância 0.87)
-Moqueca de banana-da-terra — ...
+Moqueca de banana-da-terra, ...
 
 [2] faq.md › Restrições alimentares › Contaminação cruzada (relevância 0.81)
 A cozinha mantém área e utensílios separados para ...
@@ -1007,8 +1014,8 @@ class AgentLoop:
 
 **Pontos de projeto:**
 
-- Todas as tools de uma mesma resposta são executadas antes de devolver o lote — o modelo pode pedir mais de uma por vez (exatamente o caso da US-08)
-- Erro de tool vira `tool_result` com `is_error: true`, não exceção — o modelo tem a chance de se corrigir
+- Todas as tools de uma mesma resposta são executadas antes de devolver o lote, o modelo pode pedir mais de uma por vez (exatamente o caso da US-08)
+- Erro de tool vira `tool_result` com `is_error: true`, não exceção, o modelo tem a chance de se corrigir
 - Estouro de iterações (`MAX_ITERATIONS`) produz mensagem de fallback ao usuário e registra `exhausted: true` no trace; é um sintoma de loop e precisa aparecer em métrica
 - ~~`temperature` = 0,3 em produção, 0,0 na suite de avaliação (RNF-11)~~ **Revisto na F4.** Os modelos atuais (incluindo `claude-sonnet-5`) rejeitam `temperature`, e o SDK 1.x nem expõe o parâmetro. A profundidade é regulada por `output_config.effort` (`MODEL_EFFORT`, padrão `medium`), e `max_tokens` sobe para 16.000 porque o thinking adaptativo consome do mesmo limite. O esboço acima é ilustrativo; a implementação está em `agent/loop.py` e `agent/llm.py`.
 - Resposta encerrada sem `stop_reason = tool_use` (por exemplo, truncada em `max_tokens`) é gravada na sessão sem blocos `tool_use`, para não deixar pedido de tool sem resultado no histórico.
@@ -1031,9 +1038,9 @@ em datas no formato YYYY-MM-DD antes de chamar qualquer tool.
 SUAS FONTES DE INFORMAÇÃO
 Você tem duas fontes e elas não se substituem:
 
-1. buscar_conhecimento — cardápio, ingredientes, alérgenos, preços de itens fixos,
+1. buscar_conhecimento, cardápio, ingredientes, alérgenos, preços de itens fixos,
    políticas da casa, perguntas frequentes, informações sobre o restaurante.
-2. Tools transacionais — disponibilidade de mesas, reservas e pratos do dia.
+2. Tools transacionais, disponibilidade de mesas, reservas e pratos do dia.
 
 REGRAS INVIOLÁVEIS
 - Nunca afirme que há ou não há mesa disponível sem ter chamado
@@ -1089,7 +1096,7 @@ class TurnResult:
 - Janela: últimas 20 mensagens (aproximadamente 10 turnos)
 - Ao exceder, as mais antigas são descartadas; a v1 não faz sumarização
 - TTL de 60 minutos de inatividade
-- Armazenamento in-process — perde-se no restart, aceitável na v1 (não-objetivo do PRD)
+- Armazenamento in-process, perde-se no restart, aceitável na v1 (não-objetivo do PRD)
 
 `to_api_messages()` produz a lista no formato esperado pela API, preservando os blocos `tool_use` e `tool_result` pareados. Quebrar esse pareamento é o bug mais comum nesta camada; há teste dedicado.
 
@@ -1194,7 +1201,7 @@ class TurnResult:
 | Mensagem longa após higiene (§8.5, P3) | 422 | `{"error": "MENSAGEM_LONGA", "detail": "..."}` |
 | Rota de debug com `DEBUG_UI=false` | 404 | `{"error": "Not Found"}` |
 
-Erro de **tool** nunca chega ao HTTP — é tratado dentro do loop (§8.1).
+Erro de **tool** nunca chega ao HTTP, é tratado dentro do loop (§8.1).
 
 ### 9.4 Interface de demonstração (RF-12)
 
@@ -1336,7 +1343,7 @@ Contadores emitidos por turno, agregáveis a partir do JSONL:
 
 ### 11.2 Métricas
 
-**Do retriever** — medidas isoladamente, sem passar pelo agente, sobre os casos com `chunks_esperados` não vazio:
+**Do retriever**, medidas isoladamente, sem passar pelo agente, sobre os casos com `chunks_esperados` não vazio:
 
 | Métrica | Definição |
 |---|---|
@@ -1344,14 +1351,14 @@ Contadores emitidos por turno, agregáveis a partir do JSONL:
 | `MRR` | Média de 1/posição do primeiro chunk esperado |
 | `latencia_p95_ms` | Percentil 95 da busca vetorial (RNF-03) |
 
-**Do agente** — turno completo:
+**Do agente**, turno completo:
 
 | Métrica | Definição |
 |---|---|
 | `acuracia_roteamento` | Proporção de casos em que o conjunto de tools chamadas é exatamente o esperado |
 | `taxa_citacao` | Entre os casos com `deve_citar_fonte`, proporção com marcação de fonte na resposta |
 | `taxa_recusa_correta` | Entre os casos com `deve_recusar`, proporção em que a recusa ocorreu |
-| `violacao_termos_proibidos` | Casos em que um termo proibido apareceu na resposta — **alvo: zero** |
+| `violacao_termos_proibidos` | Casos em que um termo proibido apareceu na resposta, **alvo: zero** |
 | `cobertura_termos_obrigatorios` | Proporção de termos obrigatórios presentes |
 | `taxa_esgotamento` | Proporção de turnos que atingiram `MAX_ITERATIONS` |
 
@@ -1422,7 +1429,7 @@ Nenhum valor de configuração é lido fora de `config.py`. Nenhum segredo é ve
 | Nível | Alvo | Ferramenta |
 |---|---|---|
 | Unitário | `date_resolver`, `rules`, `chunker`, `masking`, geração de código | pytest, sem I/O |
-| Unitário | `embedder` — garante prefixos `query:` e `passage:` | pytest com modelo real em CPU |
+| Unitário | `embedder`, garante prefixos `query:` e `passage:` | pytest com modelo real em CPU |
 | Integração | `AvailabilityService` e `ReservationService` sobre SQLite em memória | pytest + fixture de banco |
 | Integração | `Retriever` sobre collection Chroma temporária com documentos de fixture | pytest |
 | Integração | `AgentLoop` com cliente LLM falso, roteirizado por cenário | pytest, sem chamada de rede |
@@ -1431,14 +1438,14 @@ Nenhum valor de configuração é lido fora de `config.py`. Nenhum segredo é ve
 
 **Casos de borda obrigatórios:**
 
-- Jantar que fecha às 00:00 — slot de 22:30 é válido, 23:00 não é
+- Jantar que fecha às 00:00, slot de 22:30 é válido, 23:00 não é
 - Reserva exatamente no limite de 60 minutos de antecedência
 - Reserva exatamente 60 dias à frente
-- Grupo de 7 pessoas — deve unir duas mesas do mezanino
-- Grupo de 13 pessoas — deve recusar, não alocar
-- Duas criações simultâneas para a última mesa livre — apenas uma deve vencer
+- Grupo de 7 pessoas, deve unir duas mesas do mezanino
+- Grupo de 13 pessoas, deve recusar, não alocar
+- Duas criações simultâneas para a última mesa livre, apenas uma deve vencer
 - Cancelamento a 3h59 e a 4h01 do horário marcado
-- Ingestão executada duas vezes sem alteração — zero escritas
+- Ingestão executada duas vezes sem alteração, zero escritas
 - Pareamento `tool_use` / `tool_result` preservado após poda da janela de histórico
 
 Cobertura mínima de 80 % em `domain/`, `tools/` e `rag/` (RNF-05). Camada de API e UI não entram na meta.
@@ -1449,35 +1456,35 @@ Cobertura mínima de 80 % em `domain/`, `tools/` e `rag/` (RNF-05). Camada de AP
 
 Cada fase termina em estado executável e commitável. Nenhuma fase depende de outra que não a anterior.
 
-### F0 — Fundação
+### F0: Fundação
 `pyproject.toml`, estrutura de diretórios, `config.py`, ruff, mypy, pytest, Makefile, `.env.example`, esqueleto do README.
 **Pronto quando:** `make lint` e `make test` rodam verdes com zero testes reais.
 
-### F1 — Domínio e banco
+### F1: Domínio e banco
 Modelos SQLAlchemy, migração inicial, `seed.py`, `date_resolver.py`, `rules.py`, `AvailabilityService`, `ReservationService`, `MenuService`, erros de domínio.
 **Pronto quando:** todos os casos de borda de §13 passam, sem nenhuma linha de IA no projeto.
 
-### F2 — Base de conhecimento e RAG
+### F2: Base de conhecimento e RAG
 Os 4 documentos gerados fora do repositório e revisados, `chunker.py`, `embedder.py`, `store.py`, `ingest.py`, `retriever.py`.
 **Pronto quando:** `make ingest` é idempotente e uma busca por linha de comando devolve trechos plausíveis com score. `tests/unit/test_dataset_contract.py` confirma, usando o chunker real, que todo `chunks_esperados` de `evals/dataset.yaml` existe.
 
-### F3 — Tools
+### F3: Tools
 `base.py`, `registry.py` e as 6 tools sobre os serviços da F1 e o retriever da F2.
 **Pronto quando:** cada tool tem teste de contrato e de caminho de erro; nenhuma levanta exceção não tratada.
 
-### F4 — Agente
+### F4: Agente
 `prompts.py`, `session.py`, `loop.py`, `models.py`.
 **Pronto quando:** os testes de integração com cliente falso cobrem turno simples, turno com tool, turno com duas tools, erro de tool e estouro de iterações.
 
-### F5 — Interface
+### F5: Interface
 API FastAPI, DTOs, tratamento de erro, CORS e front-end Next.js com painel de bastidores (§9.4).
 **Pronto quando:** os cenários das US-01 a US-09 são reproduzíveis manualmente pela UI.
 
-### F6 — Avaliação
+### F6: Avaliação
 `dataset.yaml` com 36 casos (já escrito antes da F1, como especificação), `metrics.py`, `runner.py`, `report.py`, varredura de limiar e fixação do valor final.
 **Pronto quando:** `make eval` gera relatório e as métricas atingem os alvos da §9.1 do PRD.
 
-### F7 — Empacotamento
+### F7: Empacotamento
 Dockerfile, Docker Compose, README com diagrama e resultados, os 6 ADRs, GIF da demo do cenário composto.
 **Pronto quando:** clone limpo + `.env` + `docker compose up` entrega o sistema funcionando.
 

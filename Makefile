@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test cov ingest search seed chat eval eval-retrieval eval-threshold-sweep run-api run-web web-install web-check
+.PHONY: install lint format typecheck test cov ingest search seed chat eval eval-retrieval eval-threshold-sweep run-api run-web web-install web-check docker-build docker-up docker-down docker-reset docker-logs
 
 UV ?= uv
 
@@ -59,3 +59,20 @@ run-web:
 
 web-check:
 	cd web && npm run lint && npm run typecheck && npm test && npm run build
+
+# Pilha completa em contêiner: API em :8000 e front em :3000.
+docker-build:
+	docker compose build
+
+docker-up:
+	docker compose up --build
+
+docker-down:
+	docker compose down
+
+# Apaga também o volume: a próxima subida migra, semeia e indexa do zero.
+docker-reset:
+	docker compose down -v
+
+docker-logs:
+	docker compose logs -f

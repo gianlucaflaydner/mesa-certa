@@ -1,0 +1,46 @@
+# Sobe o Mesa Certa inteiro: `docker compose up --build`.
+# Precisa apenas de um .env na raiz com ANTHROPIC_API_KEY preenchida.
+
+services:
+  api:
+    build: .
+    image: mesa-certa-api
+    # Chave da API e demais ajustes vêm do .env, nunca da imagem.
+    env_file: .env
+    environment:
+      # Artefatos gerados moram no volume; a base de conhecimento continua vindo da imagem.
+      DATABASE_URL: sqlite:////app/var/mesa_certa.db
+      CHROMA_PATH: /app/var/chroma
+      TRACE_PATH: /app/var/traces
+      CORS_ORIGINS: '["http://localhost:3000"]'
+    ports:
+      - "8000:8000"
+    volumes:
+      - dados:/app/var
+    healthcheck:
+      # Usa a própria rota /health: 503 enquanto banco ou índice não estiverem prontos.
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      # Dá tempo à primeira partida, que migra, semeia e indexa.
+      start_period: 120s
+      retries: 5
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      args:
+        # Endereço visto pelo navegador de quem acessa, não pela rede interna do Docker.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_DEBUG_UI: ${DEBUG_UI:-false}
+    image: mesa-certa-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  dados:

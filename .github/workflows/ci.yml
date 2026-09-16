@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (lint, tipos, testes, recuperação)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Instalar dependências
+        run: uv sync --all-groups --frozen
+
+      # O modelo e5 tem cerca de 500 MB: sem cache, cada execução baixa de novo.
+      - name: Cache do modelo de embedding
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('pyproject.toml') }}
+
+      - name: Lint
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Tipos
+        run: uv run mypy src tests scripts evals
+
+      - name: Testes
+        run: uv run pytest -m "not e2e"
+
+      # Sem chamada à API do modelo: roda o retriever e a varredura do limiar.
+      - name: Avaliação de recuperação
+        run: uv run python -m evals.retrieval --sem-relatorio
+
+  frontend:
+    name: Front-end (lint, tipos, testes, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  imagens:
+    name: Imagens Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      # Só constrói para garantir que os Dockerfiles continuam válidos; não publica.
+      - name: Construir imagem do front
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

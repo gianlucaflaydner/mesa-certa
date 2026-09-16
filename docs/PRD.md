@@ -1,10 +1,10 @@
-# PRD — Mesa Certa
+# PRD: Mesa Certa
 
 **Product Requirements Document**
 
 | Campo | Valor |
 |---|---|
-| Produto | Mesa Certa — assistente conversacional de restaurante |
+| Produto | Mesa Certa, assistente conversacional de restaurante |
 | Versão do documento | 1.0 |
 | Data | 2026-09-14 |
 | Autor | Gian Flaydner |
@@ -26,7 +26,7 @@ O sistema é construído sobre um agente LLM com **tool calling**, e combina dua
 
 ### 1.2 Problema
 
-Restaurantes recebem um volume alto de perguntas repetitivas por telefone e mensagem — horário de funcionamento, opções sem glúten, política de cancelamento, se há mesa para determinado horário. Essas perguntas consomem tempo da equipe de salão em horários de pico e a resposta frequentemente varia conforme quem atende.
+Restaurantes recebem um volume alto de perguntas repetitivas por telefone e mensagem, horário de funcionamento, opções sem glúten, política de cancelamento, se há mesa para determinado horário. Essas perguntas consomem tempo da equipe de salão em horários de pico e a resposta frequentemente varia conforme quem atende.
 
 Ao mesmo tempo, sistemas de reserva tradicionais são formulários rígidos: não respondem contexto ("essa mesa fica na varanda?") e não lidam com pedidos compostos ("quero reservar e uma pessoa é celíaca").
 
@@ -36,7 +36,7 @@ Um único ponto de atendimento que resolve tanto a pergunta informativa quanto a
 
 ### 1.4 Contexto do projeto
 
-Este é um **projeto de portfólio**. O objetivo secundário — e igualmente importante — é demonstrar domínio de:
+Este é um **projeto de portfólio**. O objetivo secundário, e igualmente importante, é demonstrar domínio de:
 
 - Arquitetura de sistemas agentic com separação explícita entre conhecimento semântico e conhecimento transacional
 - Implementação de RAG de ponta a ponta (ingestão, chunking, embedding, recuperação, citação)
@@ -61,7 +61,7 @@ Este é um **projeto de portfólio**. O objetivo secundário — e igualmente im
 
 | ID | Objetivo |
 |---|---|
-| OBJ-05 | Manter o agente agnóstico de framework de orquestração — loop de tool calling próprio, auditável |
+| OBJ-05 | Manter o agente agnóstico de framework de orquestração, loop de tool calling próprio, auditável |
 | OBJ-06 | Produzir relatório de avaliação reproduzível com métricas de recuperação e de roteamento |
 | OBJ-07 | Rastrear cada turno de conversa: query, trechos recuperados com score, tools chamadas, resposta |
 | OBJ-08 | Subir o sistema completo com um comando (`docker compose up`) sem dependência de serviço externo além da API do modelo |
@@ -83,27 +83,27 @@ Estão explicitamente **fora** do escopo da primeira versão:
 
 ## 3. Personas
 
-### 3.1 Bruna — cliente que quer reservar
+### 3.1 Bruna: cliente que quer reservar
 
 Publicitária, 34 anos, Porto Alegre. Descobriu o restaurante pelo Instagram e quer jantar com o namorado no sábado. Está no celular, no intervalo do trabalho. Quer saber se tem mesa às 20h e reservar sem preencher formulário.
 
 **Precisa de:** resposta rápida sobre disponibilidade, confirmação com código, clareza sobre política de cancelamento.
 **Frustra-se com:** formulários longos, ter que ligar, respostas vagas do tipo "consulte o restaurante".
 
-### 3.2 Roberto — cliente com restrição alimentar
+### 3.2 Roberto: cliente com restrição alimentar
 
 Analista de sistemas, 41 anos. É celíaco. Antes de reservar em qualquer lugar precisa saber se existem opções seguras. Vai levar um grupo de 6 pessoas do trabalho.
 
 **Precisa de:** informação confiável e específica sobre alérgenos e contaminação cruzada, citada e não inventada.
 **Frustra-se com:** respostas genéricas ("temos opções para todos os gostos") e informação errada, que para ele tem consequência clínica.
 
-### 3.3 Camila — maître do restaurante
+### 3.3 Camila: maître do restaurante
 
 Trabalha no salão, 29 anos. Não usa o sistema diretamente na v1, mas é quem sofre com as consequências: reservas duplicadas, overbooking, clientes que chegam esperando algo que o sistema prometeu errado.
 
 **Precisa de:** que o assistente nunca confirme uma reserva que o banco não registrou, e que nunca prometa um prato ou condição que não existe.
 
-### 3.4 Avaliador técnico — recrutador ou tech lead
+### 3.4 Avaliador técnico: recrutador ou tech lead
 
 Abre o repositório no GitHub por 5 a 10 minutos. Lê o README, olha a estrutura de pastas, talvez rode a demo.
 
@@ -121,7 +121,7 @@ Dados canônicos do restaurante fictício. Estes valores são a fonte de verdade
 |---|---|
 | Nome | Mesa Certa |
 | Conceito | Cozinha brasileira contemporânea, fogo e fermentação |
-| Endereço | Rua Fernandes Vieira, 812 — Bom Fim, Porto Alegre/RS |
+| Endereço | Rua Fernandes Vieira, 812, Bom Fim, Porto Alegre/RS |
 | Telefone | (51) 3030-4050 |
 | Capacidade total | 72 lugares |
 
@@ -129,10 +129,10 @@ Dados canônicos do restaurante fictício. Estes valores são a fonte de verdade
 
 | Dia | Almoço | Jantar |
 |---|---|---|
-| Segunda | — | — (fechado) |
-| Terça a quinta | — | 18:00 – 23:00 |
-| Sexta e sábado | 12:00 – 15:00 | 18:00 – 00:00 |
-| Domingo | 12:00 – 16:00 | — |
+| Segunda | não há | não há (fechado) |
+| Terça a quinta | não há | 18:00 às 23:00 |
+| Sexta e sábado | 12:00 às 15:00 | 18:00 às 00:00 |
+| Domingo | 12:00 às 16:00 | não há |
 
 ### 4.3 Salão
 
@@ -151,8 +151,8 @@ Mesas reserváveis: 16 mesas, 64 lugares. O balcão do fogo (8 lugares) não ent
 |---|---|
 | Granularidade dos horários | 30 minutos |
 | Última reserva do serviço | 90 minutos antes do fechamento |
-| Duração da mesa (1–4 pessoas) | 90 minutos |
-| Duração da mesa (5–12 pessoas) | 120 minutos |
+| Duração da mesa (1 a 4 pessoas) | 90 minutos |
+| Duração da mesa (5 a 12 pessoas) | 120 minutos |
 | Antecedência mínima | 60 minutos |
 | Antecedência máxima | 60 dias |
 | Tamanho mínimo do grupo | 1 pessoa |
@@ -188,11 +188,11 @@ Regras que o sistema deve respeitar. Cada uma é rastreável até um ponto de im
 
 ## 6. Épicos e user stories
 
-### Épico E1 — Conhecimento da casa (RAG)
+### Épico E1: Conhecimento da casa (RAG)
 
 ---
 
-**US-01 — Consultar informação sobre um prato**
+**US-01: Consultar informação sobre um prato**
 
 > Como Bruna, quero saber o que tem em um prato do cardápio, para decidir se vou pedir.
 
@@ -216,7 +216,7 @@ Funcionalidade: Consulta ao cardápio via base de conhecimento
 
 ---
 
-**US-02 — Verificar restrição alimentar**
+**US-02: Verificar restrição alimentar**
 
 > Como Roberto, quero saber quais pratos são seguros para celíacos, para reservar com confiança.
 
@@ -241,7 +241,7 @@ Funcionalidade: Consulta de alérgenos
 
 ---
 
-**US-03 — Consultar políticas da casa**
+**US-03: Consultar políticas da casa**
 
 > Como Bruna, quero entender a política de cancelamento antes de reservar.
 
@@ -257,11 +257,11 @@ Funcionalidade: Consulta a políticas
 
 ---
 
-### Épico E2 — Reservas (tools transacionais)
+### Épico E2: Reservas (tools transacionais)
 
 ---
 
-**US-04 — Consultar disponibilidade**
+**US-04: Consultar disponibilidade**
 
 > Como Bruna, quero saber se há mesa em determinada data e horário, para me organizar.
 
@@ -296,7 +296,7 @@ Funcionalidade: Consulta de disponibilidade
 
 ---
 
-**US-05 — Criar reserva**
+**US-05: Criar reserva**
 
 > Como Bruna, quero reservar uma mesa pela conversa e receber um código de confirmação.
 
@@ -317,7 +317,7 @@ Funcionalidade: Criação de reserva
     Então ele deve solicitar o telefone antes de chamar a tool
     E não deve chamar a tool "criar_reserva" com dados incompletos
 
-  Cenário: Concorrência — mesa tomada entre a consulta e a criação
+  Cenário: Concorrência, mesa tomada entre a consulta e a criação
     Dado que a consulta de disponibilidade indicou mesa livre
     E que a última mesa foi ocupada antes da criação
     Quando a tool "criar_reserva" retorna erro de indisponibilidade
@@ -333,7 +333,7 @@ Funcionalidade: Criação de reserva
 
 ---
 
-**US-06 — Consultar reserva existente**
+**US-06: Consultar reserva existente**
 
 > Como Bruna, quero consultar minha reserva pelo código, para conferir os dados.
 
@@ -354,7 +354,7 @@ Funcionalidade: Consulta de reserva
 
 ---
 
-**US-07 — Cancelar reserva**
+**US-07: Cancelar reserva**
 
 > Como Bruna, quero cancelar minha reserva pelo código.
 
@@ -383,11 +383,11 @@ Funcionalidade: Cancelamento de reserva
 
 ---
 
-### Épico E3 — Casos compostos (RAG + tools)
+### Épico E3: Casos compostos (RAG + tools)
 
 ---
 
-**US-08 — Reserva com restrição alimentar**
+**US-08: Reserva com restrição alimentar**
 
 > Como Roberto, quero reservar para um grupo garantindo que há opção segura para mim.
 
@@ -404,7 +404,7 @@ Funcionalidade: Pedido composto envolvendo conhecimento e transação
 
 ---
 
-**US-09 — Consultar pratos do dia**
+**US-09: Consultar pratos do dia**
 
 > Como Bruna, quero saber qual é o prato do dia hoje.
 
@@ -426,11 +426,11 @@ Funcionalidade: Pratos do dia
 
 ---
 
-### Épico E4 — Confiabilidade e limites
+### Épico E4: Confiabilidade e limites
 
 ---
 
-**US-10 — Recusar o que está fora de escopo**
+**US-10: Recusar o que está fora de escopo**
 
 > Como Camila, quero que o assistente não prometa o que o restaurante não oferece.
 
@@ -455,7 +455,7 @@ Funcionalidade: Limites do assistente
 
 ---
 
-**US-11 — Falha de tool tratada com clareza**
+**US-11: Falha de tool tratada com clareza**
 
 > Como Bruna, quero saber quando algo deu errado em vez de receber uma resposta inventada.
 
@@ -472,11 +472,11 @@ Funcionalidade: Tratamento de erro de tool
 
 ---
 
-### Épico E5 — Avaliação e observabilidade
+### Épico E5: Avaliação e observabilidade
 
 ---
 
-**US-12 — Relatório de avaliação**
+**US-12: Relatório de avaliação**
 
 > Como avaliador técnico, quero ver evidência quantitativa de que o sistema funciona.
 
@@ -494,7 +494,7 @@ Funcionalidade: Suite de avaliação
 
 ---
 
-**US-13 — Rastreabilidade do turno**
+**US-13: Rastreabilidade do turno**
 
 > Como desenvolvedor, quero inspecionar o que aconteceu em cada turno de conversa.
 
@@ -526,9 +526,9 @@ Funcionalidade: Trace de execução
 | RF-07 | Toda resposta baseada em RAG inclui citação de documento e seção | Must | US-01, US-02, US-03 |
 | RF-08 | O agente mantém histórico da conversa dentro de uma sessão | Must | Todas |
 | RF-09 | O agente interpreta datas relativas ("sábado", "amanhã", "próxima sexta") no fuso America/Sao_Paulo | Must | US-04, US-05 |
-| RF-10 | A ingestão de documentos é idempotente e re-executável por comando | Must | — |
+| RF-10 | A ingestão de documentos é idempotente e re-executável por comando | Must | não há |
 | RF-11 | O sistema expõe endpoint HTTP de conversa | Must | Todas |
-| RF-12 | O sistema expõe interface web mínima de chat para demonstração | Should | — |
+| RF-12 | O sistema expõe interface web mínima de chat para demonstração | Should | não há |
 | RF-13 | O sistema registra trace estruturado por turno | Must | US-13 |
 | RF-14 | O sistema possui suite de avaliação executável por comando | Must | US-12 |
 | RF-15 | Quando a recuperação não atinge o limiar de similaridade, o agente declara ausência de informação | Must | US-02, US-10 |
@@ -545,7 +545,7 @@ Funcionalidade: Trace de execução
 | RNF-04 | Limite de iterações do loop do agente | máximo 8 ciclos de tool por turno |
 | RNF-05 | Cobertura de testes na camada de domínio e tools | ≥ 80 % |
 | RNF-06 | Subida completa do ambiente | `docker compose up` sem etapa manual adicional |
-| RNF-07 | Custo de embeddings | zero — modelo local, sem chamada de API |
+| RNF-07 | Custo de embeddings | zero, modelo local, sem chamada de API |
 | RNF-08 | Portabilidade do índice vetorial | persistido em disco, versionável ou reconstruível por comando |
 | RNF-09 | Privacidade em logs | telefone e e-mail mascarados em todo registro estruturado |
 | RNF-10 | Idioma | todas as respostas em português do Brasil |
@@ -616,7 +616,7 @@ Funcionalidade: Trace de execução
 
 | ID | Risco | Impacto | Mitigação |
 |---|---|---|---|
-| R-01 | Modelo confirma reserva sem chamar a tool | Alto — quebra confiança do produto | Regra explícita no system prompt, caso dedicado na suite de avaliação, verificação no trace |
+| R-01 | Modelo confirma reserva sem chamar a tool | Alto, quebra confiança do produto | Regra explícita no system prompt, caso dedicado na suite de avaliação, verificação no trace |
 | R-02 | Recuperação traz trecho irrelevante e a resposta fica errada com aparência de correta | Alto | Limiar de similaridade, citação obrigatória, casos negativos no dataset |
 | R-03 | Interpretação errada de data relativa | Médio | Resolução de data em código, não no modelo; testes unitários de casos de borda |
 | R-04 | Condição de corrida na criação de reserva | Médio | Validação de disponibilidade dentro da transação, constraint de unicidade no banco |
@@ -633,12 +633,12 @@ Funcionalidade: Trace de execução
 | **Agente** | Componente que recebe a mensagem do usuário, decide quais tools chamar e produz a resposta final |
 | **Tool** | Função Python exposta ao modelo com schema declarado, que o modelo pode solicitar a execução |
 | **Tool calling** | Mecanismo pelo qual o modelo solicita a execução de uma tool e recebe o resultado de volta |
-| **RAG** | Retrieval-Augmented Generation — recuperar trechos relevantes e usá-los como contexto da geração |
+| **RAG** | Retrieval-Augmented Generation, recuperar trechos relevantes e usá-los como contexto da geração |
 | **Agentic RAG** | Variante em que a recuperação é uma tool que o modelo decide quando chamar, em vez de um passo fixo do pipeline |
 | **Chunk** | Trecho de documento indexado como unidade de recuperação |
 | **Embedding** | Representação vetorial de um texto, usada para busca por similaridade |
 | **hit@k** | Proporção de consultas em que o trecho correto aparece entre os k primeiros resultados |
-| **MRR** | Mean Reciprocal Rank — média do inverso da posição do primeiro resultado correto |
+| **MRR** | Mean Reciprocal Rank, média do inverso da posição do primeiro resultado correto |
 | **Roteamento** | Decisão do agente sobre qual conjunto de tools usar em um turno |
 | **Trace** | Registro estruturado de tudo que aconteceu em um turno de conversa |
 | **Groundedness** | Grau em que a resposta é sustentada pelo contexto recuperado |

@@ -1,0 +1,23 @@
+# Tudo aqui fica fora do contexto enviado ao Docker na construção.
+.git
+.venv
+node_modules
+web/node_modules
+web/.next
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.impeccable
+
+# Segredos nunca entram na imagem: vêm por variável de ambiente.
+.env
+
+# Artefatos gerados: o contêiner cria os seus na primeira subida.
+data/chroma/
+data/traces/
+data/*.db
+evals/results/*.json
